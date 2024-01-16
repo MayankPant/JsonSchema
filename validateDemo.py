@@ -1,7 +1,7 @@
 import jsonschema
 import json
 def validate(schema, data):
-    if-(json.is_valid(data)):
+    if-(is_valid(data)):
         return False
 
     try:
@@ -19,7 +19,13 @@ def validate(schema, data):
 
     
         
-        
+def is_valid(jsonFile):
+    try:
+        json.loads(jsonFile)
+        return True
+    except ValueError:
+        print("  Is valid?: False")
+        return False   
 
 
 
