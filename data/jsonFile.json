@@ -17,8 +17,6 @@
             "format": "email"
         }
     },
-    "required": [
-        "id",
-        "name"
-    ]
+
+    "required": ["id", "name"]
 }
