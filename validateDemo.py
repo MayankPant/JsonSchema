@@ -1,14 +1,15 @@
 import jsonschema
 import json
 def validate(schema, data):
+    
     if-(is_valid(data)):
         return False
 
     try:
         requirements = schema["required"]
         for req in requirements:
-            if(data.contains(req)):
-                val = data[req]
+            if(req in data):
+                val = data.get(req)
                 if -(type(val) == schema[req]["type"]):
                     return False
             else:
@@ -24,7 +25,6 @@ def is_valid(jsonFile):
         json.loads(jsonFile)
         return True
     except ValueError:
-        print("  Is valid?: False")
         return False   
 
 
