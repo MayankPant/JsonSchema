@@ -1,0 +1,18 @@
+## lets the user define a json schema
+
+import json
+
+def add_schema(file):
+    try:
+        jsonFile = json.loads(file)
+        json_ob = json.dumps(jsonFile, indent=4) # serialsing the json file to store it
+        f = open("data/jsonFile.json", "w")
+        with open("data/jsonFile.json", "w") as outfile:
+            outfile.write(json_ob)
+        f.close()
+    except Exception as e:
+        print(e)
+
+#open and read the file after the appending:
+json_file = input()
+add_schema(json_file)
