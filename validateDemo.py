@@ -1,11 +1,13 @@
-
+import click
 import json
+
+
 def validate(schema, data):
     queueSchema = []
     queueSchema.append(schema)
     queueData = []
     queueData.append(data)
-    map  = {"string" : str, "integer" : int, "object" : dict, "number" : int}
+    map  = {"string" : str, "integer" : int, "object" : dict, "number" : float}
 
     while len(queueSchema) != 0:
         currSchema = queueSchema.pop()
@@ -18,8 +20,12 @@ def validate(schema, data):
             if not (req in currData):
                 return False
             
-            # elif not type(currData.get(req)) is map.get(currSchema.get("properties").get(req).get("type")):
-            #       return False
+            elif not type(currData.get(req)) is map.get(currSchema.get("properties").get(req).get("type")):
+                  return False
+            elif currData.get(req) < currSchema.get("properties").get("req").get("exclusiveMinimum"):
+                return False
+            elif currData.get(req) > currSchema.get("properties").get("req").get("exclusiveMaximum"):
+                return False
             
             if currSchema.get("properties").get(req).get("type") == "object":
                 queueSchema.append(currSchema.get("properties").get(req))
@@ -42,14 +48,28 @@ user_file = {
     }
 }
 
-openFile = open("data/jsonFile.json", 'r')
+@click.command()
+@click.option('--schema-file', type=click.Path(exists=True), help='Path to the JSON schema file')
+def validate_json(schema_file):
+    with open(schema_file, 'r') as file:
+        schema = json.load(file)
 
-schema = json.loads(openFile.read())
+    # Get JSON data from user input
+    data = click.prompt('Enter JSON data: ', type=str)
 
-if(validate(schema, user_file)):
-    print("json is valid")
-else:
-    print("json not valid")
+    try:
+        data_dict = json.loads(data)
+    except json.JSONDecodeError as e:
+        click.echo(f"Error decoding JSON data: {e}")
+        return
+
+    if validate(schema, data_dict):
+        click.echo("Validation successful!")
+    else:
+        click.echo("Validation failed!")
+
+validate_json()
+
 
 
 
