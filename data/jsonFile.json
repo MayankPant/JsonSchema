@@ -11,7 +11,7 @@
             "type" : "string"
         },
         "price" : {
-            "type" : "number",
+            "type" : "integer",
             "exclusiveMinimum" : 30
         },
         "tags" : {
@@ -43,10 +43,10 @@
                 
                 },
                 "breadth"  : {
-                    "type" : "number"
+                    "type" : "integer"
                 },
                 "height" : {
-                    "type" : "number"
+                    "type" : "integer"
                 }
             },
             "required" : ["length", "breadth", "height"]
