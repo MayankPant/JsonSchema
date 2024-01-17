@@ -1,22 +1,59 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Person",
-    "type": "object",
-    "properties": {
-        "id": {
-            "type": "integer"
+	"$schema": "https://json-schema.org/draft/2019-09/schema",
+      "title" : "product",
+    "type" : "object",
+    "description" :  "A product in the catalog",
+    "properties" : {
+        "productID" : {
+            "type" : "integer"
         },
-        "name": {
-            "type": "string"
+        "productName" : {
+            "type" : "string"
         },
-        "age": {
-            "type": "integer"
+        "price" : {
+            "type" : "number",
+            "exclusiveMinimum" : 30
         },
-        "email": {
-            "type": "string",
-            "format": "email"
+        "tags" : {
+          
+            "type" : "array",
+            "desctiption" : "The tags for the product",
+            "minItems" : 1,
+            "uniqueItems" : true
+        },
+        "dimensions" : {
+            "type" : "object",
+            "properties" : {
+
+                "length" : {
+
+                    "type" : "object",
+                    
+                    "properties" : {
+                        "thickness" : {
+                            "type" : "integer"
+                        },
+                        "youngs modulus" : {
+                            "type" : "number"
+                        }
+                    },
+
+
+                    "required" : ["thickness", "youngs modulus"]
+                
+                },
+                "breadth"  : {
+                    "type" : "number"
+                },
+                "height" : {
+                    "type" : "number"
+                }
+            },
+            "required" : ["length", "breadth", "height"]
         }
+
+
     },
 
-    "required": ["id", "name"]
+    "required" : ["productID", "price", "dimensions"]
 }
