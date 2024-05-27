@@ -1,7 +1,9 @@
 
+var cm = null;
+var cm2 = null;
 document.addEventListener('DOMContentLoaded', function() {
 
-  var cm = new CodeMirror.fromTextArea(document.getElementById("schema-editor"), {
+  cm = new CodeMirror.fromTextArea(document.getElementById("schema-editor"), {
               readOnly: false,
               mode: "python",
               theme: "dracula",
@@ -16,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cm.setSize(480, 480);
 
-    var cm2 = new CodeMirror.fromTextArea(document.getElementById("schema-validator"), {
+    cm2 = new CodeMirror.fromTextArea(document.getElementById("schema-validator"), {
       readOnly: false,
       mode: "python",
       theme: "dracula",
@@ -29,10 +31,23 @@ document.addEventListener('DOMContentLoaded', function() {
      
 })
 
-   cm2.setSize(480, 480);
-
-
-
+  cm2.setSize(480, 480);
 
 });
-console.log(jQuery.fn.jquery)
+
+function validate() {
+
+  schema = cm.getValue();
+  user_input = cm2.getValue();
+  
+  
+}
+
+// Add an event listener for when the DOM content is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Get the button element by its id
+  var validator = document.getElementById('validate');
+
+  // Attach an event listener to the button
+  validator.addEventListener('click', validate);
+});

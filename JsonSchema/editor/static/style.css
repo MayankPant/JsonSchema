@@ -13,3 +13,5 @@
     direction: ltr;
     width: 100%;
 }
+.cm-bracket-matching { color: red; }
+.cm-bracket { color: blue; }
