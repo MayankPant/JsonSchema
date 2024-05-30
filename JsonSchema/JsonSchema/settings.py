@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'rest_framework',
     'editor.apps.EditorConfig',
     'django.contrib.admin',
@@ -69,7 +70,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'JsonSchema.wsgi.application'
+# WSGI_APPLICATION = 'JsonSchema.wsgi.application'
+ASGI_APPLICATION = 'JsonSchema.asgi.application'
 
 
 # Database
@@ -93,6 +95,15 @@ DATABASES = {
     }
 }
 
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG':{
+            "hosts" : [("localhost", 6379)]
+        },
+    },
+}
 
 
 # Password validation
