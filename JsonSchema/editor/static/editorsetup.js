@@ -51,13 +51,14 @@ function openConnection(){
     console.log("Websocket is connected");
   });
 
-  websocket.addEventListener('message', function(event){
+  // receiving a message from server to client
+  websocket.onmessage = function(event){
     console.log("Message from server: ", event.data);
     const responseData = JSON.parse(event.data);
-  });
-
-  // Set up the validate button event listener here to avoid multiple bindings
-  document.getElementById("user-input").addEventListener('change', sendToServer);
+    cm.setValue(responseData.response);
+  };
+  // sends the data to the server from client
+  cm.on('change', sendToServer);
 }
 
 function sendToServer(){

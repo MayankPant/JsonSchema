@@ -11,8 +11,8 @@ class VerificationConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-
-        # Verify the data (simple check for this example)
+        print(data)
+        
         if validate(data):
             response = 'Data is verified'
         else:
