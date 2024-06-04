@@ -44,7 +44,7 @@ CREATE TABLE Validations (
 class User(models.Model):
     user_id = models.CharField(primary_key=True, default=generate_key)
     username = models.CharField(max_length=200)
-    password_hash = models.CharField(default=1234)
+    password_hash = models.CharField(default='1234')
     profile_picture = models.ImageField(max_length=200, default="https://img.icons8.com/office/80/circled-user-male-skin-type-3.png")
     user_email = models.CharField(max_length=200)
     created_at = models.DateTimeField(default=datetime.now) # automatically set to now time

@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -15,15 +16,16 @@
         <div class="login-image flex justify-center items-center mb-6">
             <img src="https://scontent.fblr23-1.fna.fbcdn.net/v/t39.30808-6/241511720_224495369538470_5299580986500898777_n.png?_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_ohc=fJ9YD_t1O_0Q7kNvgEO2UeW&_nc_ht=scontent.fblr23-1.fna&oh=00_AYC7cN5DrOXcoiaYp25HOvFfT8qcQCN8xRbsLa8LeRND1g&oe=666409DF" alt="" height="120px" width="120px">
         </div>
-        <form action="authenticate" method="post">
+        <form action="/jsonschema/login/" method="post">
+            {% csrf_token %}
             <div class="field-container flex flex-col gap-4">
                 <div class="email flex flex-col">
-                    <label for="email" class="mb-2 font-semibold">Email:</label>
-                    <input type="text" name="Email Address" id="email" class="border border-gray-300 p-2 rounded-lg">
+                    <label for="email" class="mb-2 font-semibold">Username:</label>
+                    <input type="text" name="username" id="email" class="border border-gray-300 p-2 rounded-lg">
                 </div>
                 <div class="password flex flex-col">
                     <label for="password" class="mb-2 font-semibold">Password:</label>
-                    <input type="password" name="Password" id="password" class="border border-gray-300 p-2 rounded-lg">
+                    <input type="password" name="password" id="password" class="border border-gray-300 p-2 rounded-lg">
                 </div>
                 <div class="flex justify-center text-sm text-gray-500">
                     <a href="#" class="hover:underline">Forgot Password?</a>

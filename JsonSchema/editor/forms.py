@@ -1,7 +1,7 @@
 from .models import User
 from django import forms
 
-class UserForm(forms.ModelForm):
+class UserLoginForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['id', 'name', 'password', 'profile']
+        fields = ['username', 'password_hash']

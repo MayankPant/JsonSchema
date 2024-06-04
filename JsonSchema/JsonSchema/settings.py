@@ -73,6 +73,9 @@ TEMPLATES = [
 # WSGI_APPLICATION = 'JsonSchema.wsgi.application'
 ASGI_APPLICATION = 'JsonSchema.asgi.application'
 
+# Adding a custom authentication backend
+#   
+
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
