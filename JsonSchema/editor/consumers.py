@@ -18,6 +18,6 @@ class VerificationConsumer(AsyncWebsocketConsumer):
         else:
             response = 'Invalid data'
 
-        await self.send(text_data=json.dumps({
-            'response': response
-        }))
+        # await self.send(text_data=json.dumps({
+        #     'response': response
+        # }))

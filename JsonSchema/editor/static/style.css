@@ -4,14 +4,14 @@
 /* Create a container to hold the textareas */
 .textarea-container {
     display: flex; /* Use flexbox to arrange items side by side */
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    padding: 20px;
     gap: 20px; /* Add spacing between textareas */
 }
-
-.CodeMirror-sizer {
-    font-family: monospace;
-    height: 300px;
-    direction: ltr;
-    width: 100%;
+.save-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-.cm-bracket-matching { color: red; }
-.cm-bracket { color: blue; }

@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{% static 'editorsetup.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+
+    <title>Login</title>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="container max-w-md mx-auto bg-white p-8 rounded-lg shadow-lg">
+        <div class="login-image flex justify-center items-center mb-6">
+            <img src="https://scontent.fblr23-1.fna.fbcdn.net/v/t39.30808-6/241511720_224495369538470_5299580986500898777_n.png?_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_ohc=fJ9YD_t1O_0Q7kNvgEO2UeW&_nc_ht=scontent.fblr23-1.fna&oh=00_AYC7cN5DrOXcoiaYp25HOvFfT8qcQCN8xRbsLa8LeRND1g&oe=666409DF" alt="" height="120px" width="120px">
+        </div>
+        <form action="authenticate" method="post">
+            <div class="field-container flex flex-col gap-4">
+                <div class="email flex flex-col">
+                    <label for="email" class="mb-2 font-semibold">Email:</label>
+                    <input type="text" name="Email Address" id="email" class="border border-gray-300 p-2 rounded-lg">
+                </div>
+                <div class="password flex flex-col">
+                    <label for="password" class="mb-2 font-semibold">Password:</label>
+                    <input type="password" name="Password" id="password" class="border border-gray-300 p-2 rounded-lg">
+                </div>
+                <div class="flex justify-center text-sm text-gray-500">
+                    <a href="#" class="hover:underline">Forgot Password?</a>
+                </div>
+            </div>
+            <div class="flex justify-center mt-6">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Login</button>
+            </div>
+
+            <div class="flex justify-center text-sm text-gray-500 mt-6">
+                <p class="text-gray-500 mr-3">Dont have an account?</p>
+                <a class="text-blue-500 hover:underline" href="#" class="hover:underline">Sign Up</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

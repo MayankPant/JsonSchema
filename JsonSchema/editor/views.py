@@ -10,3 +10,9 @@ from rest_framework import status
 
 def index(request):
     return render(request, "editor/index.html")
+
+def login(request):
+    return render(request, 'editor/login.html')
+
+def authenticate(request, form):
+    pass
