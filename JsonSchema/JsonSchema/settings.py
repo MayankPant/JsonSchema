@@ -70,6 +70,26 @@ TEMPLATES = [
     },
 ]
 
+"""Setting up logger to display all mesaages to console"""
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'editor': {  
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
+
 # WSGI_APPLICATION = 'JsonSchema.wsgi.application'
 ASGI_APPLICATION = 'JsonSchema.asgi.application'
 
