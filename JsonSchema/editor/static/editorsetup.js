@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     lint: true,
     
   });
-  codeMirroEditor_schema.setSize(480, 480);
+  
 
   codeMirroEditor_user_input = new CodeMirror.fromTextArea(document.getElementById("user-input"), {
     readOnly: false,
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
   });
 
-  codeMirroEditor_user_input.setSize(480, 480);
+  
 
   // Open WebSocket connection when the page loads
   openConnection();
