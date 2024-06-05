@@ -24,10 +24,25 @@ def login(request: HttpRequest):
         password = request.POST.get('password')
         print(password)
         user = UserAuth.authenticate(request=request, username=username, password=password)
-        
+
         if user != None:
             return render(request, "editor/index.html")
         else:
             return render(request, "editor/login.html")
     else:
         return render(request, "editor/login.html")
+    
+def sign_up(request: HttpRequest):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        print(username)
+        password = request.POST.get('password')
+        print(password)
+        user = UserAuth.authenticate(request=request, username=username, password=password)
+        
+        if user != None:
+            return render(request, "editor/index.html")
+        else:
+            return render(request, "editor/login.html")
+    else:
+        return render(request, "editor/signup.html")

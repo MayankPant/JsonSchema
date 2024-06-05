@@ -19,9 +19,9 @@
         <form action="/jsonschema/login/" method="post">
             {% csrf_token %}
             <div class="field-container flex flex-col gap-4">
-                <div class="email flex flex-col">
-                    <label for="email" class="mb-2 font-semibold">Username:</label>
-                    <input type="text" name="username" id="email" class="border border-gray-300 p-2 rounded-lg">
+                <div class="username flex flex-col">
+                    <label for="username" class="mb-2 font-semibold">Username:</label>
+                    <input type="text" name="username" id="username" class="border border-gray-300 p-2 rounded-lg">
                 </div>
                 <div class="password flex flex-col">
                     <label for="password" class="mb-2 font-semibold">Password:</label>
@@ -37,7 +37,7 @@
 
             <div class="flex justify-center text-sm text-gray-500 mt-6">
                 <p class="text-gray-500 mr-3">Dont have an account?</p>
-                <a class="text-blue-500 hover:underline" href="#" class="hover:underline">Sign Up</a>
+                <a class="text-blue-500 hover:underline" href="/jsonschema/signup/" class="hover:underline">Sign Up</a>
             </div>
         </form>
     </div>
