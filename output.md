@@ -1,4 +1,0 @@
-# Selected schema documentation
-
-
-## Overview

@@ -1,0 +1,6 @@
+test.json
+test2.json
+../.idea/
+/__pycache__/
+/editor/migrations/
+/editor/__pycache__/
