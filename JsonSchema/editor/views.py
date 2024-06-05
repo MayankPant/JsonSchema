@@ -27,7 +27,7 @@ def login(request: HttpRequest):
         user = UserAuth.authenticate(request=request, username=username, password=password)
 
         if user != None:
-            return render(request, "editor/index.html")
+            return render(request, "editor/index.html", context={"user" : user})
         else:
             return render(request, "editor/login.html")
     else:
