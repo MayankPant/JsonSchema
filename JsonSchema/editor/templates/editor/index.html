@@ -61,7 +61,7 @@
                 <p>SAVED SCHEMAS</p>
                 {%for schemas in user_schemas %}
                     <div id="schema-list">
-                        <input type="radio" class="radio-schemas" id="{{ schemas.schema_name }}" name="{{ schemas.schema_name }}" value="{{ schemas.schema_name }}">
+                        <input type="radio" class="radio-schemas" id="{{ schemas.schema_name }}" name="schema-list" value="{{ schemas.schema_name }}">
                         <label for="{{ schemas.schema_name }}" class="radio-label">{{ schemas.schema_name }}</label>
                         <button type="submit" class="delete-button font-bold">DELETE</button>
                     </div>
