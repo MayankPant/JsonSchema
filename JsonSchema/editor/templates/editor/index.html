@@ -59,11 +59,13 @@
             </div>
             <div class="sidebar">
                 <p>SAVED SCHEMAS</p>
-                <div>
-                    <input type="radio" class="radio-schemas" id="schema1" name="schema-selection" value="schema1">
-                    <label for="schema1" class="radio-label">SCHEMA 1</label>
-                    <button class="delete-button font-bold">DELETE</button>
-                </div>
+                {%for schemas in user_schemas %}
+                    <div id="schema-list">
+                        <input type="radio" class="radio-schemas" id="{{ schemas.schema_name }}" name="{{ schemas.schema_name }}" value="{{ schemas.schema_name }}">
+                        <label for="{{ schemas.schema_name }}" class="radio-label">{{ schemas.schema_name }}</label>
+                        <button type="submit" class="delete-button font-bold">DELETE</button>
+                    </div>
+                {% endfor %}
             </div>
             
         </div>

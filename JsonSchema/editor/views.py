@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import User
+from .models import User, Schema
 from django.http import HttpRequest
 from .backends import UserAuth
 from .utils import generate_key, password_hasher
@@ -26,8 +26,17 @@ def login(request: HttpRequest):
         print(password)
         user = UserAuth.authenticate(request=request, username=username, password=password)
 
+        """
+
+        Retrieving the schemas for the user
+
+        """
+        user_schemas = Schema.objects.filter(user=user)
+        # Iterate through the schemas
+        for schema in user_schemas:
+            print(schema.schema_name, schema.schema_text)
         if user != None:
-            return render(request, "editor/index.html", context={"user" : user})
+            return render(request, "editor/index.html", context={"user" : user, "user_schemas" : user_schemas})
         else:
             return render(request, "editor/login.html")
     else:
