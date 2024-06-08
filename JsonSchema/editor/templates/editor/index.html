@@ -41,8 +41,8 @@
     <title>Index</title>
 </head>
 <body>
-        
-        <div class="container">
+    
+        <div class="container">    
             <div class="textarea-container">
                 <div >
                     <label for="schema">Schema Definition</label>
@@ -57,6 +57,15 @@
             <div class="actions">
                 <button id="save" type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded my-5">Save</button>
             </div>
+            <div class="sidebar">
+                <p>SAVED SCHEMAS</p>
+                <div>
+                    <input type="radio" class="radio-schemas" id="schema1" name="schema-selection" value="schema1">
+                    <label for="schema1" class="radio-label">SCHEMA 1</label>
+                    <button class="delete-button font-bold">DELETE</button>
+                </div>
+            </div>
+            
         </div>
         {% endblock %}
 </body>
