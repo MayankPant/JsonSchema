@@ -1,8 +1,8 @@
-var codeMirroEditor_schema = null;
-var codeMirroEditor_user_input = null;
-let schema = null;
-let user_input = null;
-let websocket = null;
+export var codeMirroEditor_schema = null;
+export var codeMirroEditor_user_input = null;
+var schema = null;
+var user_input = null;
+export var websocket = null;
 
 document.addEventListener('DOMContentLoaded', function() {
   codeMirroEditor_schema = new CodeMirror.fromTextArea(document.getElementById("schema"), {
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     lint: true,
     
   });
-  
+  console.log("schema instance created");
 
   codeMirroEditor_user_input = new CodeMirror.fromTextArea(document.getElementById("user-input"), {
     readOnly: false,
@@ -35,12 +35,11 @@ document.addEventListener('DOMContentLoaded', function() {
     lint: true,
     
   });
-
+  console.log("user instance created");
   
 
   // Open WebSocket connection when the page loads
   openConnection();
-  setAvatar();
 });
 
 function openConnection(){
@@ -60,11 +59,11 @@ function openConnection(){
   });
 
   // receiving a message from server to client
-  websocket.onmessage = function(event){
-    console.log("Message from server: ", event.data);
-    const responseData = JSON.parse(event.data);
-    codeMirroEditor_schema.setValue(responseData.response);
+  websocket.onmessage = function(event) {
+    var data = JSON.parse(event.data);
+    console.log(data);
   };
+  
   // sends the data to the server from client
   codeMirroEditor_schema.on('change', sendToServer);
 }
@@ -90,7 +89,3 @@ function toggleUserMenu(){
   menu.classList.toggle('hidden');
 }
 
-function setAvatar(){
-  var avatar  = document.getElementById("avatar");
-  
-}

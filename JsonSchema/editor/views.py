@@ -1,13 +1,14 @@
 from django.shortcuts import render, redirect
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User, Schema
 from django.http import HttpRequest
 from .backends import UserAuth
 from .utils import generate_key, password_hasher
-
-
+from .consumers import VerificationConsumer
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from .serializers import UserSerializer, SchemaSerializer
 
 # Create your views here.
 
@@ -32,10 +33,40 @@ def login(request: HttpRequest):
 
         """
         user_schemas = Schema.objects.filter(user=user)
-        # Iterate through the schemas
-        for schema in user_schemas:
-            print(schema.schema_name, schema.schema_text)
+        user_serializer = UserSerializer(user)
+        schema_serializer = SchemaSerializer(user_schemas, many=True)
         if user != None:
+            """
+            Here we use the session to store the data related to the 
+            logged in user. Sessions are used to store information about
+            multiple requests for the same user.
+            Sessions have several benefits like user isolation, persistence,
+            scalability, security
+            """
+            request.session['user_id'] = user.user_id
+            request.session['user_schemas'] = schema_serializer.data
+            relevent_user_data = {
+                "user": user_serializer.data,
+                "user_schemas": schema_serializer.data
+            }
+            # send the data to the frontend for manuipulation
+
+            """
+            Websocket communication is asynchronous, but normal views are
+            synchronous, hence you cant simply use the websocket in views to
+            send the data. WHat we did was create a group and converted the sync
+            views to async. This allows us to send the data 
+            """
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                "user_info", #group name
+                { # data
+                    # type of message so that this is the type consumer reacts to
+                    "type": "send_user_data_event",
+                    "data": relevent_user_data
+                }
+            )
+            print("Sent user data to WebSocket group:", relevent_user_data)
             return render(request, "editor/index.html", context={"user" : user, "user_schemas" : user_schemas})
         else:
             return render(request, "editor/login.html")
