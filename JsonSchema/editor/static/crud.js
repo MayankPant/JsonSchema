@@ -26,6 +26,7 @@ function saveSchema() {
             "schema" : codeMirroEditor_schema.getValue()
         })
         closeModal();
+        location.reload();
     }
 
     /**
