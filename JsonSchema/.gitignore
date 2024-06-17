@@ -5,5 +5,5 @@ test2.json
 /editor/migrations/
 /editor/__pycache__/
 /media/
-!/media/resources/
+!/media/resources
 ../dump.rdb
