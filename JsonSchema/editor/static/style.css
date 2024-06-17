@@ -61,7 +61,7 @@ body {
     font-weight: bold;
 }
 
-.sidebar > div {
+.sidebar > form {
     display: flex;  
     justify-content: flex-start; /* Changed from space-between to flex-start */
     align-items: center;
@@ -124,6 +124,24 @@ body {
     background-color: #000;
 }
 
+#schema-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+#schema-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+#schema-list input:hover {
+    background-color: #3b393900;
+}
+
 
 .delete-button {
     margin-left: auto; /* Add space between the Use and Delete buttons */
@@ -164,22 +182,6 @@ body {
     background-color: #0056b3;
 }
 
-.schema-list {
-    list-style: none;
-    padding: 0;
-}
-.schema-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #fff;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-}
-.schema-list li:hover {
-    background-color: #3b393900;
-}
 
 
 /* Modal styles */

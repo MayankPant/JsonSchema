@@ -90,3 +90,19 @@ def sign_up(request: HttpRequest):
         return redirect('login')
     else:
         return render(request, "editor/signup.html")
+    
+def delete_schema(request: HttpRequest):
+    if request.method == "POST":
+        user_id = request.session.get('user_id')
+        if user_id != None:
+            user = User.objects.get(user_id = user_id)
+            print(f"Current User: {UserSerializer(user).data} ")
+            print(request.POST.get("selected_schema"))
+            schema_name = request.POST.get('selected_schema')
+            print(f"Schema to be deleted: {schema_name}")
+            user_schemas = Schema.objects.filter(user=user)
+            deleted_schema = Schema.objects.filter(user=user, schema_name = schema_name)
+            deleted_schema.delete()
+        return render(request, 'editor/index.html', context={"user" : user, "user_schemas" : user_schemas})
+
+

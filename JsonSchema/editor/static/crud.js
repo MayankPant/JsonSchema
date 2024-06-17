@@ -28,6 +28,28 @@ function saveSchema() {
         closeModal();
     }
 
+    /**
+     * here since radio buttons are designed to be grouped within
+     * the same for and in here we have multiple forms, we need
+     * to manually change the state of radio buttons using javascript
+     * 
+     */
+// Get all radio buttons with class 'radio-schemas' across all forms
+var radios = document.querySelectorAll('.radio-schemas');
+
+// Add a change event listener to each radio button
+radios.forEach(function(radio) {
+    radio.addEventListener('change', function() {
+        // When a radio button is selected, unselect all others
+        radios.forEach(function(otherRadio) {
+            if(otherRadio !== radio) {
+                otherRadio.checked = false;
+            }
+        });
+    });
+});
+
+
 // Attach functions to window object to make them global
 window.showModal = showModal;
 window.closeModal = closeModal;

@@ -59,16 +59,20 @@
             <div class="actions">
                 <button id="save" data-modal-target="crud-modal" data-modal-toggle="crud-modal"  type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded my-5" onclick="showModal()">Save</button>
             </div>
-            <div class="sidebar">
-                <p>SAVED SCHEMAS</p>
-                {%for schemas in user_schemas %}
-                    <div id="schema-list">
-                        <input type="radio" class="radio-schemas" id="{{ schemas.schema_name }}" name="schema-list" value="{{ schemas.schema_name }}">
-                        <label for="{{ schemas.schema_name }}" class="radio-label">{{ schemas.schema_name }}</label>
-                        <button type="submit" class="delete-button font-bold">DELETE</button>
-                    </div>
-                {% endfor %}
-            </div>
+                <div class="sidebar">
+                    <p>SAVED SCHEMAS</p>
+                    {% for schemas in user_schemas %}
+                    <form action="/jsonschema/delete/" method="post">
+                        {% csrf_token %}
+                        <div id="schema-list">
+                            <input type="radio" class="radio-schemas" id="{{ schemas.schema_name }}" name="selected_schema" value="{{ schemas.schema_name }}">
+                            <label for="{{ schemas.schema_name }}" class="radio-label">{{ schemas.schema_name }}</label>
+                            <button type="submit" class="delete-button font-bold">DELETE</button>
+                        </div>
+                    </form> 
+                    {% endfor %}
+                </div>  
+            
 
              <!-- Modal -->
             
