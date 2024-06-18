@@ -5,6 +5,7 @@ from asgiref.sync import sync_to_async, async_to_sync
 from .models import User, Schema
 from .views import *
 from .serializers import UserSerializer, SchemaSerializer
+from .utils import JsonSchemaValidator
 
 
 class VerificationConsumer(AsyncWebsocketConsumer):
@@ -31,9 +32,13 @@ class VerificationConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data = json.loads(text_data)
         print("Received data from WebSocket:", data)
+
+        
         if data.get("event") == "SAVE":
             del data['event']
             await self.save_schema(data)
+
+
         elif data.get("type") == "websocket_acknowledgement":
             user = await self.get_user()
             if user != None:
@@ -48,6 +53,17 @@ class VerificationConsumer(AsyncWebsocketConsumer):
         elif data.get("event") == "DELETE":
             del data['event']
             await self.delete_schema(data)
+
+
+        elif data.get("event") == "editor_change":
+            schema = data["schema"]
+            user_input = data["user_input"]
+            if JsonSchemaValidator.validate_jsonschema(self, schema):
+                if JsonSchemaValidator.validate(self, schema, user_input):
+                    return await self.send(json.dumps({"Validation" : "True"}))
+            return await self.send(json.dumps({"Validation":"False"}))
+
+
 
     @database_sync_to_async
     def get_user_schemas(self, user: User):

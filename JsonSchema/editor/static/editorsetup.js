@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Open WebSocket connection when the page loads
   openConnection();
+  disableEditorBorders(); // disables the borders for the editor
 });
 
 function openConnection(){
@@ -74,12 +75,40 @@ function openConnection(){
 
   // receiving a message from server to client
   websocket.onmessage = function(event) {
+
     var data = JSON.parse(event.data);
-    console.log(data);
+    console.log("Recived Data: " + data.Validation)
+
+    if (data.Validation == "True"){
+      console.log("Changing borders on True");
+      var editorBorders = document.querySelectorAll('.cm-s-dracula.CodeMirror');
+      editorBorders.forEach(function(border) {
+        border.style.border = "7px solid";
+        border.style.borderImage = "linear-gradient(45deg, #90ee90, #00ff00, #90ee90) 1 / 1 / 0 stretch";
+        border.style.borderRadius = "4px";
+      });
+    }
+    else if (data.Validation == "False"){
+      console.log("Changing borders on False");
+      var editorBorders = document.querySelectorAll('.cm-s-dracula.CodeMirror');
+      editorBorders.forEach(function(border) {
+        border.style.border = "7px solid";
+        border.style.borderImage = "linear-gradient(45deg, #f80808, #ff3333, #f80808) 1 / 1 / 0 stretch";
+        border.style.borderRadius = "4px";
+      });
+    }
   };
   
   // sends the data to the server from client
   codeMirroEditor_schema.on('change', sendToServer);
+  codeMirroEditor_user_input.on('change', sendToServer);
+}
+
+function disableEditorBorders(){
+  var editorBorders = document.querySelectorAll('.cm-s-dracula.CodeMirror');
+  editorBorders.forEach(function(border) {
+    border.style.border = "None";
+  })
 }
 
 function sendToServer(){
@@ -87,6 +116,7 @@ function sendToServer(){
   user_input = codeMirroEditor_user_input.getValue();
   
   const data = {
+    "event" :  "editor_change",
     "schema": schema,
     "user_input": user_input
   };
