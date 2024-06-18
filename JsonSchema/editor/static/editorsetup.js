@@ -54,9 +54,23 @@ function openConnection(){
     "/ws/verify/"
   );
 
-  websocket.addEventListener('open', function(event){
-    console.log("Websocket is connected");
-  });
+  websocket.onopen =  function(event){
+    console.log('WebSocket is open now.');
+    // Send acknowledgment message to the backend
+    /**
+     * The issue we were facing when sending the user details to the frontend
+     * was that even before a connection was establised, we were sending in
+     * the information which of-course caused it to miss it. So what we did was
+     * onnly when a the websocket connection was establised we sent in an acknowledgement
+     * message to the server, and only then the server sent the the user information
+     * This was done through recieve and send_user_data in the consumer.
+     * 
+     */
+    websocket.send(JSON.stringify({
+        type: 'websocket_acknowledgement',
+        message: 'WebSocket connection established'
+    }));
+  };
 
   // receiving a message from server to client
   websocket.onmessage = function(event) {

@@ -49,7 +49,6 @@ def login(request: HttpRequest):
                 "user": user_serializer.data,
                 "user_schemas": schema_serializer.data
             }
-            # send the data to the frontend for manuipulation
 
             """
             Websocket communication is asynchronous, but normal views are
@@ -57,15 +56,6 @@ def login(request: HttpRequest):
             send the data. WHat we did was create a group and converted the sync
             views to async. This allows us to send the data 
             """
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                "user_info", #group name
-                { # data
-                    # type of message so that this is the type consumer reacts to
-                    "type": "send_user_data_event",
-                    "data": relevent_user_data
-                }
-            )
             print("Sent user data to WebSocket group:", relevent_user_data)
             return render(request, "editor/index.html", context={"user" : user, "user_schemas" : user_schemas})
         else:
@@ -100,9 +90,11 @@ def delete_schema(request: HttpRequest):
             print(request.POST.get("selected_schema"))
             schema_name = request.POST.get('selected_schema')
             print(f"Schema to be deleted: {schema_name}")
-            user_schemas = Schema.objects.filter(user=user)
             deleted_schema = Schema.objects.filter(user=user, schema_name = schema_name)
             deleted_schema.delete()
-        return render(request, 'editor/index.html', context={"user" : user, "user_schemas" : user_schemas})
+            user_schemas = Schema.objects.filter(user=user)
+            # updating values in the sessioon storage
+            request.session["user_schemas"] = SchemaSerializer(user_schemas, many=True).data
+        return render(request, 'editor/index.html', context={"user" : user, "user_schemas" : Schema.objects.filter(user = user)})
 
 

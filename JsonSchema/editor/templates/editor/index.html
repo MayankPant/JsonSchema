@@ -65,7 +65,7 @@
                     <form action="/jsonschema/delete/" method="post">
                         {% csrf_token %}
                         <div id="schema-list">
-                            <input type="radio" class="radio-schemas" id="{{ schemas.schema_name }}" name="selected_schema" value="{{ schemas.schema_name }}">
+                            <input type="radio" class="radio-schemas" id="{{ schemas.schema_name }}" name="selected_schema" value="{{ schemas.schema_name }}" onclick="viewSchema()">
                             <label for="{{ schemas.schema_name }}" class="radio-label">{{ schemas.schema_name }}</label>
                             <button type="submit" class="delete-button font-bold">DELETE</button>
                         </div>

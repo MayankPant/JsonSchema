@@ -50,7 +50,14 @@ radios.forEach(function(radio) {
     });
 });
 
-
+/**
+ * On select of a particular schema, it should be viewed in the
+ * Json schema editor window
+ * 
+ */
+function viewSchema(){
+    
+}
 // Attach functions to window object to make them global
 window.showModal = showModal;
 window.closeModal = closeModal;

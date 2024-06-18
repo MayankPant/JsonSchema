@@ -4,7 +4,7 @@ from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async, async_to_sync
 from .models import User, Schema
 from .views import *
-from .serializers import UserSerializer
+from .serializers import UserSerializer, SchemaSerializer
 
 
 class VerificationConsumer(AsyncWebsocketConsumer):
@@ -34,12 +34,31 @@ class VerificationConsumer(AsyncWebsocketConsumer):
         if data.get("event") == "SAVE":
             del data['event']
             await self.save_schema(data)
+        elif data.get("type") == "websocket_acknowledgement":
+            user = await self.get_user()
+            if user != None:
+                user_data = UserSerializer(user).data
+                user_schemas = self.scope["session"].get("user_schemas")
+                relevant_user_data = {
+                    "user" : user_data,
+                    "user_schemas" : user_schemas
+                }
+                await self.send_user_data({"type" : "send_user_data_event", "data" : relevant_user_data})
+        
         elif data.get("event") == "DELETE":
             del data['event']
             await self.delete_schema(data)
 
-        
-    async def send_user_data_event(self, event):
+    @database_sync_to_async
+    def get_user_schemas(self, user: User):
+        try:
+            user_schemas = Schema.objects.filter(user=user)
+            return user_schemas
+        except Schema.DoesNotExist:
+            return None
+
+
+    async def send_user_data(self, event):
         print("Type: ", event['type'])
         data = event['data']
         print("Sending data to WebSocket:", data)
@@ -50,6 +69,7 @@ class VerificationConsumer(AsyncWebsocketConsumer):
         print(UserSerializer(user).data)
         if user != None:
             new_schema = await self.query_save_schema(user, data)
+            user_schemas = await self.get_user_schemas(user)
             print("Saved schema ")
         else:
             print("No logged in user")
