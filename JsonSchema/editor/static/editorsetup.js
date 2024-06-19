@@ -132,4 +132,4 @@ function toggleUserMenu(){
   var menu = document.getElementById('userMenu');
   menu.classList.toggle('hidden');
 }
-
+window.toggleUserMenu = toggleUserMenu;
