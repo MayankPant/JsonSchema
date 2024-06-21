@@ -1,4 +1,6 @@
 
+import { websocket } from "./editorsetup";
+
 const USERNAME_REGEX = /^[a-zA-Z0-9_$]{1,200}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&_]{8,}$/;
@@ -45,12 +47,12 @@ function validatePasswords(){
     var password = document.getElementById('password');
     var confirm_password = document.getElementById('confirm_password');
 
-    if(password.value != confirm_password.value){
-        document.getElementById("password-validation").classList.toggle('hidden')
+    if(password.value == confirm_password.value){
+        document.getElementById("password-validation").style.display = "none";
         return true;
     }
     else{
-        document.getElementById("password-validation").classList.toggle('hidden')
+        document.getElementById("password-validation").style.display = "block";
         return false;
     }
 }
@@ -64,12 +66,28 @@ function validateFile(){
         console.log(type)
         console.log(format)
         if(!(format in ['png', 'jpeg', 'svg', 'jpg', 'gif'])){
-            document.getElementById("file-validation").classList.toggle('hidden');
+            document.getElementById("file-validation").style.display = "block";
             return true;
         }
         else{
-            document.getElementById("file-validation").classList.toggle('hidden')
+            document.getElementById("file-validation").style.display = "none";
             return false;
         }
+    }
+}
+function otpVerification(){
+    
+    if (validatePasswords()){
+        dataToBeSent = {
+            "event" : "generate_and verify_otp",
+            "length" : 4,
+        }
+
+        if (websocket && websocket.readyState === WebSocket.OPEN) {
+            websocket.send(JSON.stringify(dataToBeSent));
+          } else {
+            console.error("WebSocket  not open");
+          }
+
     }
 }

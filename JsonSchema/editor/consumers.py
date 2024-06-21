@@ -62,6 +62,9 @@ class VerificationConsumer(AsyncWebsocketConsumer):
                 if JsonSchemaValidator.validate(self, schema, user_input):
                     return await self.send(json.dumps({"event" : "editor_change", "Validation":"True"}))
             return await self.send(json.dumps({"event" : "editor_change", "Validation":"False"}))
+        
+        elif data.get("event") == "generate_and_verify_otp":
+            pass
 
 
 

@@ -117,3 +117,10 @@ def profile(request: HttpRequest):
         if user_id != None:
             user = User.objects.get(user_id = user_id)
             return render(request, "editor/profile.html", context={"user" : user})
+        
+def forgot_password(request: HttpRequest):
+    user_id = request.session.get("user_id")
+    if request.method == "POST":
+        pass
+    else:
+        return render(request, "editor/forgot_password.html")
