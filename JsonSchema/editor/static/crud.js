@@ -57,10 +57,12 @@ radios.forEach(function(radio) {
  * 
  */
 function viewSchema(){
+    console.log("View Schema event");
         var radios = document.getElementsByName("selected_schema")
         radios.forEach(function(radio){
             if(radio.checked){
                 var schema_name = radio.value;
+                console.log("Current schema selected: " + schema_name)
                 var user_schemas = sessionStorage.getItem("user_schemas");
 
             if (!user_schemas) {

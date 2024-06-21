@@ -98,3 +98,8 @@ def delete_schema(request: HttpRequest):
         return render(request, 'editor/index.html', context={"user" : user, "user_schemas" : Schema.objects.filter(user = user)})
 
 
+def profile(request: HttpRequest):
+    user_id = request.session.get("user_id")
+    if user_id != None:
+        user = User.objects.get(user_id = user_id)
+        return render(request, "editor/profile.html", context={"user" : user})
