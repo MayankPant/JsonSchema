@@ -100,6 +100,20 @@ def delete_schema(request: HttpRequest):
 
 def profile(request: HttpRequest):
     user_id = request.session.get("user_id")
-    if user_id != None:
+    if request.method == "POST":
+        username = request.POST.get('username')
+        print(f"Username to be updated to: {username}")
+        email = request.POST.get('email')
+        print(f"Email to be updated to: {email}")
+        profile_picture = request.FILES.get('profile_picture')
+        print(f"Profile Picture to be updated to: {profile_picture}")
         user = User.objects.get(user_id = user_id)
-        return render(request, "editor/profile.html", context={"user" : user})
+        user.username = username
+        user.user_email = email
+        user.profile_picture = profile_picture
+        user.save(update_fields=["username", "user_email", "profile_picture"])
+        return redirect('login')
+    else:
+        if user_id != None:
+            user = User.objects.get(user_id = user_id)
+            return render(request, "editor/profile.html", context={"user" : user})

@@ -31,42 +31,28 @@
             <div class="login-image flex justify-center items-center mb-6">
                 <img class="h-15 w-15  rounded-full" src="{{ user.profile_picture.url }}" alt="user current profile Picture">
             </div>
-            <form action="/jsonschema/save_profile/" method="post" enctype="multipart/form-data">
+            <form action="/jsonschema/profile/" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="field-container flex flex-col gap-4">
                     <div class="username flex flex-col">
                         <label for="username" class="mb-2 font-semibold">Username:</label>
-                        <input type="text" name="username" id="username" class="border border-gray-300 p-2 rounded-lg peer" pattern="^[a-zA-Z0-9_$]{1,200}$">
+                        <input type="text" name="username" id="username" class="border border-gray-300 p-2 rounded-lg peer" pattern="^[a-zA-Z0-9_$]{1,200}$" value="{{ user.username }}">
                         <span class="mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
                             Please enter a valid username
                         </span>
                     </div>
                     <div class="email flex flex-col">
                         <label for="email" class="mb-2 font-semibold">Email:</label>
-                        <input type="email" name="email" id="email" class="border border-gray-300 p-2 rounded-lg peer" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$">
+                        <input type="email" name="email" id="email" class="border border-gray-300 p-2 rounded-lg peer" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$" value="{{ user.user_email }}">
                         <span class="mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block">
                             Please enter a Email Address
-                        </span>
-                    </div>
-                    <div class="password flex flex-col">
-                        <label for="password" class="mb-2 font-semibold">Password:</label>
-                        <input type="password" name="password" id="password" class="border border-gray-300 p-2 rounded-lg peer">
-                        <span class="mt-2 hidden text-sm text-red-500 peer-[&:not(:placeholder-shown):not(:focus):invalid]:block" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_])[A-Za-z\d@$!%*?&_]{8,}$">
-                            Please enter a strong password
-                        </span>
-                    </div>
-                    <div class="confirm_password flex flex-col">
-                        <label for="confirm_password" class="mb-2 font-semibold">Confirm Password:</label>
-                        <input type="password" name="confirm_password" id="confirm_password" class="border border-gray-300 p-2 rounded-lg" onchange="validatePasswords()">
-                        <span class = "mt-2 hidden text-sm text-red-500" id="password-validation">
-                            Password and confirm should be same
                         </span>
                     </div>
                     <div class="profile_picture flex flex-col">
                         
                         
                         <label class="mb-2 mt-6 font-semibold" for="file_input">Upload Profile Picture:</label>
-                        <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file" onchange="validateFile()" name="profile_picture">
+                        <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file" onchange="validateFile()" name="profile_picture" value="{{ user.profile_picture }}">
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 hidden" id="file-validation">SVG, PNG, JPG or GIF.</p>
     
                     </div>
