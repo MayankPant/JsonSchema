@@ -48,7 +48,7 @@ class VerificationConsumer(AsyncWebsocketConsumer):
                     "user" : user_data,
                     "user_schemas" : user_schemas
                 }
-                await self.send_user_data({"type" : "send_user_data_event", "data" : relevant_user_data})
+                await self.send_user_data({"event" : "send_user_data_event", "user_data" : relevant_user_data})
         
         elif data.get("event") == "DELETE":
             del data['event']
@@ -60,8 +60,8 @@ class VerificationConsumer(AsyncWebsocketConsumer):
             user_input = data["user_input"]
             if JsonSchemaValidator.validate_jsonschema(self, schema):
                 if JsonSchemaValidator.validate(self, schema, user_input):
-                    return await self.send(json.dumps({"Validation" : "True"}))
-            return await self.send(json.dumps({"Validation":"False"}))
+                    return await self.send(json.dumps({"event" : "editor_change", "Validation":"True"}))
+            return await self.send(json.dumps({"event" : "editor_change", "Validation":"False"}))
 
 
 
@@ -75,10 +75,10 @@ class VerificationConsumer(AsyncWebsocketConsumer):
 
 
     async def send_user_data(self, event):
-        print("Type: ", event['type'])
-        data = event['data']
+        print("Type: ", event['event'])
+        data = event['user_data']
         print("Sending data to WebSocket:", data)
-        await self.send(text_data=json.dumps(data))
+        await self.send(text_data=json.dumps(event))
 
     async def save_schema(self, data):
         user = await self.get_user()

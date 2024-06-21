@@ -52,16 +52,53 @@ radios.forEach(function(radio) {
 
 /**
  * On select of a particular schema, it should be viewed in the
- * Json schema editor window
+ * Json schema editor window. We also Added a few lines of code
+ * to beautify the code before setting up the codeeditor value.
  * 
  */
 function viewSchema(){
-    
+        var radios = document.getElementsByName("selected_schema")
+        radios.forEach(function(radio){
+            if(radio.checked){
+                var schema_name = radio.value;
+                var user_schemas = sessionStorage.getItem("user_schemas");
+
+            if (!user_schemas) {
+                console.error("user_schemas not found in sessionStorage");
+                return;
+            }
+
+            try {
+                user_schemas = JSON.parse(user_schemas);
+            } catch (e) {
+                console.error("Error parsing user_schemas from sessionStorage", e);
+                return;
+            }
+
+            for(let i = 0; i < user_schemas.length; i++){
+                if(user_schemas[i].schema_name == schema_name)
+                    try {
+                        let prettyJsonString = JSON.stringify(JSON.parse(user_schemas[i].schema_text), null, 2);
+                        console.log(prettyJsonString);
+                        codeMirroEditor_schema.setValue(prettyJsonString);
+                        // Alternatively, if using CodeMirror 6:
+                        // codeMirroEditor_schema.dispatch({
+                        //     changes: { from: 0, insert: prettyJsonString }
+                        // });
+                    } catch (e) {
+                        console.error("Error parsing JSON:", e);
+                    }
+            }
+                
+            }
+        });
 }
+
 // Attach functions to window object to make them global
 window.showModal = showModal;
 window.closeModal = closeModal;
 window.saveSchema = saveSchema;
+window.viewSchema = viewSchema;
 
 function sendToServer(data) {
 

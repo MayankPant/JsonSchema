@@ -77,25 +77,38 @@ function openConnection(){
   websocket.onmessage = function(event) {
 
     var data = JSON.parse(event.data);
-    console.log("Recived Data: " + data.Validation)
+    console.log("Recieved Data: " + JSON.stringify(data))
 
-    if (data.Validation == "True"){
-      console.log("Changing borders on True");
-      var editorBorders = document.querySelectorAll('.cm-s-dracula.CodeMirror');
-      editorBorders.forEach(function(border) {
-        border.style.border = "7px solid";
-        border.style.borderImage = "linear-gradient(45deg, #90ee90, #00ff00, #90ee90) 1 / 1 / 0 stretch";
-        border.style.borderRadius = "4px";
-      });
-    }
-    else if (data.Validation == "False"){
-      console.log("Changing borders on False");
-      var editorBorders = document.querySelectorAll('.cm-s-dracula.CodeMirror');
-      editorBorders.forEach(function(border) {
-        border.style.border = "7px solid";
-        border.style.borderImage = "linear-gradient(45deg, #f80808, #ff3333, #f80808) 1 / 1 / 0 stretch";
-        border.style.borderRadius = "4px";
-      });
+    switch(data.event){
+      case "editor_change":
+
+        if (data.Validation == "True"){
+          console.log("Changing borders on True");
+          var editorBorders = document.querySelectorAll('.cm-s-dracula.CodeMirror');
+          editorBorders.forEach(function(border) {
+            border.style.border = "7px solid";
+            border.style.borderImage = "linear-gradient(45deg, #90ee90, #00ff00, #90ee90) 1 / 1 / 0 stretch";
+            border.style.borderRadius = "4px";
+          });
+        }
+        else if (data.Validation == "False"){
+          console.log("Changing borders on False");
+          var editorBorders = document.querySelectorAll('.cm-s-dracula.CodeMirror');
+          editorBorders.forEach(function(border) {
+            border.style.border = "7px solid";
+            border.style.borderImage = "linear-gradient(45deg, #f80808, #ff3333, #f80808) 1 / 1 / 0 stretch";
+            border.style.borderRadius = "4px";
+          });
+        }
+        break;
+      
+        case "send_user_data_event":
+          sessionStorage.setItem("user", JSON.stringify(data.user_data.user));
+          console.log("User schemas: " + console.log(data.user_data.user_schemas));
+          sessionStorage.setItem("user_schemas", JSON.stringify(data.user_data.user_schemas));
+          console.log(sessionStorage.getItem("user_schemas"));
+          break;
+
     }
   };
   
