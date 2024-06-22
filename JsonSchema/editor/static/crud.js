@@ -64,6 +64,7 @@ function viewSchema(){
                 var schema_name = radio.value;
                 console.log("Current schema selected: " + schema_name)
                 var user_schemas = sessionStorage.getItem("user_schemas");
+                console.log("Session User schema: " + user_schemas.length);
 
             if (!user_schemas) {
                 console.error("user_schemas not found in sessionStorage");
@@ -71,7 +72,9 @@ function viewSchema(){
             }
 
             try {
+                console.log("Before parsing: " + user_schemas);
                 user_schemas = JSON.parse(user_schemas);
+                console.log("Try user_schemas: " ,user_schemas);
             } catch (e) {
                 console.error("Error parsing user_schemas from sessionStorage", e);
                 return;

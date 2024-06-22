@@ -5,10 +5,14 @@ import logging
 logger = logging.getLogger('editor')
 import jsonschema
 import json
+from django.core.cache import cache
+from django.contrib.sessions.backends.db import SessionStore
+session = SessionStore()
 
 
 SET_OF_VALUES = 'abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ_0123456789'
-
+OTP_LENGTH = 4
+EXPIRY_TIME = 10
 
 
 def generate_key():
@@ -67,5 +71,18 @@ class JsonSchemaValidator():
         except Exception as e:
             print(f"Exception occured: {e}\n\n\n\n\n")
             return False
+        
+def otp_generator(length: int = OTP_LENGTH, expiry_time: int = EXPIRY_TIME):
+    try:
+        otp = "".join([random.choice("0123456789") for i in range(length)])
+        otp_meta_data = {
+            "user_id" : session.get("user_id"),
+            "otp" : otp
+        }
+        print(f"OTP Details: {otp_meta_data}")
+        cache.set("user_otp", otp_meta_data, expiry_time*60) # converting minutes to seconds
+    except Exception as e:
+        print(e)
+
 
 

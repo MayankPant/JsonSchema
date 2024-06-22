@@ -5,7 +5,7 @@ from asgiref.sync import sync_to_async, async_to_sync
 from .models import User, Schema
 from .views import *
 from .serializers import UserSerializer, SchemaSerializer
-from .utils import JsonSchemaValidator
+from .utils import JsonSchemaValidator, otp_generator
 
 
 class VerificationConsumer(AsyncWebsocketConsumer):
@@ -63,8 +63,10 @@ class VerificationConsumer(AsyncWebsocketConsumer):
                     return await self.send(json.dumps({"event" : "editor_change", "Validation":"True"}))
             return await self.send(json.dumps({"event" : "editor_change", "Validation":"False"}))
         
-        elif data.get("event") == "generate_and_verify_otp":
-            pass
+        elif data.get("event") == "generate_otp":
+            otp_generator()
+            
+
 
 
 
