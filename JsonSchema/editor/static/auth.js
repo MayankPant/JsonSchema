@@ -43,7 +43,7 @@ function flagError(message, domObject){
     
 }
 
-function validatePasswords(){
+export function validatePasswords(){
     var password = document.getElementById('password');
     var confirm_password = document.getElementById('confirm_password');
 

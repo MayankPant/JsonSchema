@@ -72,15 +72,12 @@ class JsonSchemaValidator():
             print(f"Exception occured: {e}\n\n\n\n\n")
             return False
         
-def otp_generator(length: int = OTP_LENGTH, expiry_time: int = EXPIRY_TIME):
+def otp_generator(length: int = OTP_LENGTH, expiry_time: int = EXPIRY_TIME, user_email: str = None):
     try:
         otp = "".join([random.choice("0123456789") for i in range(length)])
-        otp_meta_data = {
-            "user_id" : session.get("user_id"),
-            "otp" : otp
-        }
-        print(f"OTP Details: {otp_meta_data}")
-        cache.set("user_otp", otp_meta_data, expiry_time*60) # converting minutes to seconds
+        print(f"OTP Details: {otp}")
+        cache.set(user_email, otp, expiry_time*60) # converting minutes to seconds
+
     except Exception as e:
         print(e)
 

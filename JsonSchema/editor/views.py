@@ -2,13 +2,15 @@ from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User, Schema
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from .backends import UserAuth
-from .utils import generate_key, password_hasher
+from .utils import generate_key, password_hasher, otp_generator
 from .consumers import VerificationConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .serializers import UserSerializer, SchemaSerializer
+from django.core.cache import cache
+import json
 
 # Create your views here.
 
@@ -119,8 +121,33 @@ def profile(request: HttpRequest):
             return render(request, "editor/profile.html", context={"user" : user})
         
 def forgot_password(request: HttpRequest):
-    user_id = request.session.get("user_id")
     if request.method == "POST":
-        pass
+        print("used user mail ", user_email)
+        user = User.objects.filter(user_email = user_email).first()
+        print("Retrieved User: ", UserSerializer(user).data)
+        if user :
+            user_otp = "".join([request.POST.get("code-"+str(i))for i in range(1, 7)])
+            print("User Entered OTP: ", user_otp)
+            otp_generated = cache.get(user_email)
+            print("Generated OTP: ", otp_generated)
+            if otp_generated == user_otp:
+                print("Otp verified. Password changed")
+                return render(request, "editor/login.html")
+            else:
+                print("otp not verified")
+                return redirect('forgot_password')
+        else:
+            return redirect("forgot_password")
     else:
         return render(request, "editor/forgot_password.html")
+def generate_otp(request: HttpRequest):
+    if request.method == "POST":
+        body = request.body
+        data = json.loads(body)
+        if data["event"] == "GENERATE_OTP":
+            global user_email
+            user_email = data["user_email"]
+            otp_generator(length=data["length"], user_email = data["user_email"])
+            return HttpResponse(status.HTTP_200_OK, {"message" : "OTO generated successfully"})
+        else:
+            return HttpResponse(status.HTTP_400_BAD_REQUEST, {"message" : "OTO generation unsuccessfully"})
