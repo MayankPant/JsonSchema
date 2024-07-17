@@ -7,6 +7,10 @@ import jsonschema
 import json
 from django.core.cache import cache
 from django.contrib.sessions.backends.db import SessionStore
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django.conf import settings
+
 session = SessionStore()
 
 
@@ -74,12 +78,25 @@ class JsonSchemaValidator():
         
 def otp_generator(length: int = OTP_LENGTH, expiry_time: int = EXPIRY_TIME, user_email: str = None):
     try:
-        otp = "".join([random.choice("0123456789") for i in range(length)])
+        otp = "".join([random.choice("0123456789") for _ in range(length)])
         print(f"OTP Details: {otp}")
-        cache.set(user_email, otp, expiry_time*60) # converting minutes to seconds
-
+        cache.set(user_email, otp, expiry_time * 60)  # converting minutes to seconds
+        response = django_send_mail(
+            subject="Password Change OTP",
+            message=f"Your OTP is {otp}",
+            from_email=None, #use the default value
+            recipient_list=[user_email]
+        )
+        if response.status_code == 200:
+            print("Email sent successfully!")
+        else:
+            print("Failed to send email. ", response.content)
     except Exception as e:
-        print(e)
+        print(f"Error: {e}")
 
-
-
+def django_send_mail(subject: str, message: str, from_email: str,  recipient_list: list):
+    try:
+        send_mail(subject=subject, message=message, from_email=from_email, recipient_list=recipient_list)
+        return HttpResponse("Email sent successfully!", status=200)
+    except Exception as e:
+        return HttpResponse(f"Error sending email: {str(e)}", status=500)

@@ -4,13 +4,14 @@ from rest_framework import status
 from .models import User, Schema
 from django.http import HttpRequest, HttpResponse
 from .backends import UserAuth
-from .utils import generate_key, password_hasher, otp_generator
+from .utils import generate_key, password_hasher, otp_generator, send_mail
 from .consumers import VerificationConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .serializers import UserSerializer, SchemaSerializer
 from django.core.cache import cache
 import json
+from django.conf import settings
 
 # Create your views here.
 
@@ -122,7 +123,7 @@ def profile(request: HttpRequest):
         
 def forgot_password(request: HttpRequest):
     if request.method == "POST":
-        print("used user mail ", user_email)
+        print("Used user email:  ", user_email)
         user = User.objects.filter(user_email = user_email).first()
         print("Retrieved User: ", UserSerializer(user).data)
         if user :
@@ -153,7 +154,11 @@ def generate_otp(request: HttpRequest):
         if data["event"] == "GENERATE_OTP":
             global user_email
             user_email = data["user_email"]
-            otp_generator(length=data["length"], user_email = data["user_email"])
-            return HttpResponse(status.HTTP_200_OK, {"message" : "OTO generated successfully"})
+            user = User.objects.filter(user_email = user_email).first()
+            if user:
+                otp_generator(length=data["length"], user_email = data["user_email"])
+                return HttpResponse(status.HTTP_200_OK, {"message" : "OTP generated successfully"})
+
+            return HttpResponse(status.HTTP_400_BAD_REQUEST, {"message" : "OTP generated unsuccessfully"})
         else:
-            return HttpResponse(status.HTTP_400_BAD_REQUEST, {"message" : "OTO generation unsuccessfully"})
+            return HttpResponse(status.HTTP_400_BAD_REQUEST, {"message" : "OTP generation unsuccessfully"})

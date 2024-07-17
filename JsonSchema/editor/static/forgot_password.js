@@ -1,9 +1,12 @@
 import { validatePasswords } from "./auth.js";
 
 async function showModal() {
-    var modal = document.getElementById('crud-modal');
-    modal.style.display = "flex";
-    console.log(await generate_otp());
+    
+    if(await generate_otp() == 200){
+        var modal = document.getElementById('crud-modal');
+        modal.style.display = "flex";
+    }
+    
 }
 
 async function getCookie(name){
