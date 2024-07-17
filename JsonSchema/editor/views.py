@@ -131,6 +131,12 @@ def forgot_password(request: HttpRequest):
             otp_generated = cache.get(user_email)
             print("Generated OTP: ", otp_generated)
             if otp_generated == user_otp:
+                new_password = request.POST.get("password")
+                print("Previous user password hash: ", user.password_hash)
+                user.password_hash = password_hasher(new_password)
+                user.save()
+                print("New user password hash: ", user.password_hash)
+                print("New password: ", new_password)
                 print("Otp verified. Password changed")
                 return render(request, "editor/login.html")
             else:
