@@ -1,5 +1,5 @@
 
-import { websocket } from "./editorsetup.js";
+
 
 const USERNAME_REGEX = /^[a-zA-Z0-9_$]{1,200}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -75,23 +75,7 @@ function validateFile(){
         }
     }
 }
-function openOtpModal(){
-    
-    if (validatePasswords()){
-        dataToBeSent = {
-            "event" : "generate_otp"
-        }
 
-        if (websocket && websocket.readyState === WebSocket.OPEN) {
-            websocket.send(JSON.stringify(dataToBeSent));
-          } else {
-            console.error("WebSocket  not open");
-          }
-
-        verifyOTP();
-
-    }
-}
 
 function verifyOTP(){
 
