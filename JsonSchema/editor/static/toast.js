@@ -47,6 +47,8 @@ function showToast(message, iconClass, duration = 3000) {
 
     toast.classList.remove('hidden');
     toast.classList.add('flex');
+    toast.classList.remove('opacity-0');
+    toast.classList.add('opacity-1');
 
     if (duration) {
         setTimeout(() => {

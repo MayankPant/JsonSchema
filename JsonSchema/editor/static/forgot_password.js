@@ -20,9 +20,8 @@ async function showModal() {
             var modal = document.getElementById('crud-modal');
             modal.style.display = "flex";
         } else {
-            updateToast("Failed to generate OTP", "text-red-500");
-            showToast("Failed to generate OTP", "text-red-500");
-            hideToast();
+            updateToast("Bad Credentials.", "text-red-500");
+            showToast("Bad Credentials.", "text-red-500");
         }
     } catch (error) {
         console.error("Error in showModal:", error);
