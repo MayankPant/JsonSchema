@@ -21,14 +21,14 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         try {
             // Initialize the Dismiss instance
-            const toastDismiss = new Dismiss(dismissOptions);
+            toastDismiss = new Dismiss(toast, closeButton, dismissOptions);
             console.log("Dismiss object instantiated:", toastDismiss);
         } catch (error) {
             console.error("Error instantiating Dismiss object:", error);
         }
     }
     else{
-        console.log("Toast or close butto   n not found");
+        console.log("Toast or close button not found");
     }
 });
 
@@ -50,7 +50,7 @@ function showToast(message, iconClass, duration = 3000) {
 
     if (duration) {
         setTimeout(() => {
-            hideToast();
+            toastDismiss.hide();
         }, duration);
     }
 }
