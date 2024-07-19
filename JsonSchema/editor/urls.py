@@ -10,4 +10,5 @@ urlpatterns = [
     path('profile/', views.profile, name="profile"),
     path('forgot_password/', views.forgot_password, name="forgot_password"),
     path('generate_otp/', views.generate_otp, name="generate_otp"),
+    path('export_schemas/', views.export_schemas, name="export_schemas"),
 ]

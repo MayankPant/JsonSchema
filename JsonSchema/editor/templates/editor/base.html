@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="{% static 'editorsetup.js' %}"></script>
+    <script type="module" src="{% static 'export-schemas.js' %}"></script>
 
 
     <!-- Using favicons for website -->
@@ -59,7 +60,7 @@
               </div>
             </div>
             <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <button type="button" class="text-white focus:outline-none  font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2">
+              <button type="button" id="export-button" class="text-white focus:outline-none  font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center me-2" onclick="exportSchemas()">
                 <img src="/media/resources/export-icon.svg" alt="export button" height="36px" width="36px">
 
                 <span class="sr-only">Export Schemas</span>

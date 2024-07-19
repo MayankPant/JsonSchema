@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User, Schema
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from .backends import UserAuth
 from .utils import generate_key, password_hasher, otp_generator, send_mail
 from .consumers import VerificationConsumer
@@ -48,6 +48,7 @@ def login(request: HttpRequest):
             """
             request.session['user_id'] = user.user_id
             request.session['user_schemas'] = schema_serializer.data
+            print(type(schema_serializer.data))
             relevent_user_data = {
                 "user": user_serializer.data,
                 "user_schemas": schema_serializer.data
@@ -162,3 +163,35 @@ def generate_otp(request: HttpRequest):
             return HttpResponse(status.HTTP_400_BAD_REQUEST, {"message" : "OTP generated unsuccessfully"})
         else:
             return HttpResponse(status.HTTP_400_BAD_REQUEST, {"message" : "OTP generation unsuccessfully"})
+        
+
+def export_schemas(request: HttpRequest):
+    try:
+        user_id = request.session.get('user_id')
+        if not user_id:
+            return JsonResponse({"message": "User not logged in"}, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = User.objects.get(user_id=user_id)
+        user_schemas = Schema.objects.filter(user=user)
+        schema_serializer = SchemaSerializer(user_schemas, many=True)
+        user_schemas_data = schema_serializer.data
+        parsed_schemas = parse_data(user_schemas_data)
+
+        # Use json.dumps with ensure_ascii=False
+        json_data = json.dumps(parsed_schemas, ensure_ascii=False, indent=2)
+        
+        return HttpResponse(json_data, content_type='application/json')
+        
+    except User.DoesNotExist:
+        return JsonResponse({"message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    
+
+def parse_data(data: list):
+    schema_list = []
+    for schema in data:
+        schema_list.append({
+            "name" : schema["schema_name"],
+            "text" : json.loads(schema["schema_text"])
+        })
+
+    return schema_list
