@@ -146,7 +146,7 @@ body {
 .delete-button {
     margin-left: auto; /* Add space between the Use and Delete buttons */
     border: none;
-    color: white;
+    color: #3b393900;
     padding: 10px 20px;
     text-align: center;
     text-decoration: none;
@@ -157,9 +157,6 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.delete-button:hover {
-    background-color: #c82333;
-}
 
 
 
