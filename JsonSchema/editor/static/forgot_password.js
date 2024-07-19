@@ -3,6 +3,11 @@ import { showToast, hideToast, updateToast } from "./toast.js";
 
 async function showModal() {
     try {
+        if(!validatePasswords()){
+            var password_warning = document.getElementById("password-validation");
+            password_warning.classList.remove("hidden");
+            return;
+        }
         // adding a loader ring dynamically
         var loader_ring = document.getElementById("verify_button");
         loader_ring.innerHTML = `

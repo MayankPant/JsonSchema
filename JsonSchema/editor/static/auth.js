@@ -76,7 +76,3 @@ function validateFile(){
     }
 }
 
-
-function verifyOTP(){
-
-}
