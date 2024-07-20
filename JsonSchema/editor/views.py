@@ -12,6 +12,10 @@ from .serializers import UserSerializer, SchemaSerializer
 from django.core.cache import cache
 import json
 from django.conf import settings
+import logging
+
+logger = logging.getLogger('editor')
+
 
 # Create your views here.
 
@@ -25,9 +29,9 @@ def index(request: HttpRequest):
 def login(request: HttpRequest):
     if request.method == 'POST':
         username = request.POST.get('username')
-        print(username)
+        logger.debug(username)
         password = request.POST.get('password')
-        print(password)
+        logger.debug(password)
         user = UserAuth.authenticate(request=request, username=username, password=password)
 
         """
@@ -48,7 +52,7 @@ def login(request: HttpRequest):
             """
             request.session['user_id'] = user.user_id
             request.session['user_schemas'] = schema_serializer.data
-            print(type(schema_serializer.data))
+            logger.debug(f"Type of schema:  {type(schema_serializer.data)}")
             relevent_user_data = {
                 "user": user_serializer.data,
                 "user_schemas": schema_serializer.data
@@ -60,7 +64,7 @@ def login(request: HttpRequest):
             send the data. WHat we did was create a group and converted the sync
             views to async. This allows us to send the data 
             """
-            print("Sent user data to WebSocket group:", relevent_user_data)
+            logger.debug("Sent user data to WebSocket group:", relevent_user_data)
             return render(request, "editor/index.html", context={"user" : user, "user_schemas" : user_schemas})
         else:
             return render(request, "editor/login.html")
@@ -70,15 +74,15 @@ def login(request: HttpRequest):
 def sign_up(request: HttpRequest):
     if request.method == 'POST':
         username = request.POST.get('username')
-        print(username)
+        logger.debug(username)
         email = request.POST.get('email')
-        print(email)
+        logger.debug(email)
         password = request.POST.get('password')
-        print(password)
+        logger.debug(password)
         confirm_password = request.POST.get('confirm_password')
-        print(confirm_password)
+        logger.debug(confirm_password)
         profile_picture = request.FILES.get('profile_picture')
-        print(profile_picture)
+        logger.debug(profile_picture)
         user = User(user_id=generate_key(), username=username, user_email=email,password_hash=password_hasher(password), profile_picture=profile_picture)
         user.save()
         return redirect('login')
@@ -90,10 +94,10 @@ def delete_schema(request: HttpRequest):
         user_id = request.session.get('user_id')
         if user_id != None:
             user = User.objects.get(user_id = user_id)
-            print(f"Current User: {UserSerializer(user).data} ")
-            print(request.POST.get("selected_schema"))
+            logger.debug(f"Current User: {UserSerializer(user).data} ")
+            logger.debug(request.POST.get("selected_schema"))
             schema_name = request.POST.get('selected_schema')
-            print(f"Schema to be deleted: {schema_name}")
+            logger.debug(f"Schema to be deleted: {schema_name}")
             deleted_schema = Schema.objects.filter(user=user, schema_name = schema_name)
             deleted_schema.delete()
             user_schemas = Schema.objects.filter(user=user)
@@ -106,11 +110,11 @@ def profile(request: HttpRequest):
     user_id = request.session.get("user_id")
     if request.method == "POST":
         username = request.POST.get('username')
-        print(f"Username to be updated to: {username}")
+        logger.debug(f"Username to be updated to: {username}")
         email = request.POST.get('email')
-        print(f"Email to be updated to: {email}")
+        logger.debug(f"Email to be updated to: {email}")
         profile_picture = request.FILES.get('profile_picture')
-        print(f"Profile Picture to be updated to: {profile_picture}")
+        logger.debug(f"Profile Picture to be updated to: {profile_picture}")
         user = User.objects.get(user_id = user_id)
         user.username = username
         user.user_email = email
@@ -124,25 +128,25 @@ def profile(request: HttpRequest):
         
 def forgot_password(request: HttpRequest):
     if request.method == "POST":
-        print("Used user email:  ", user_email)
+        logger.debug("Used user email:  ", user_email)
         user = User.objects.filter(user_email = user_email).first()
-        print("Retrieved User: ", UserSerializer(user).data)
+        logger.debug("Retrieved User: ", UserSerializer(user).data)
         if user :
             user_otp = "".join([request.POST.get("code-"+str(i))for i in range(1, 7)])
-            print("User Entered OTP: ", user_otp)
+            logger.debug("User Entered OTP: ", user_otp)
             otp_generated = cache.get(user_email)
-            print("Generated OTP: ", otp_generated)
+            logger.debug("Generated OTP: ", otp_generated)
             if otp_generated == user_otp:
                 new_password = request.POST.get("password")
-                print("Previous user password hash: ", user.password_hash)
+                logger.debug("Previous user password hash: ", user.password_hash)
                 user.password_hash = password_hasher(new_password)
                 user.save()
-                print("New user password hash: ", user.password_hash)
-                print("New password: ", new_password)
-                print("Otp verified. Password changed")
+                logger.debug("New user password hash: ", user.password_hash)
+                logger.debug("New password: ", new_password)
+                logger.debug("Otp verified. Password changed")
                 return render(request, "editor/login.html")
             else:
-                print("otp not verified")
+                logger.debug("otp not verified")
                 return redirect('forgot_password')
         else:
             return redirect("forgot_password")

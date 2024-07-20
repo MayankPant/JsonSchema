@@ -6,32 +6,34 @@ from .models import User, Schema
 from .views import *
 from .serializers import UserSerializer, SchemaSerializer
 from .utils import JsonSchemaValidator, otp_generator
+import logging
+logger = logging.getLogger('editor')
 
 
 class VerificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         #create a unique group name based on the user
         self.group_name = "user_info"
-        print(self.channel_name)
-        print(self.group_name)
+        logger.debug(f"Websocket Channel name: {self.channel_name}")
+        logger.debug(f"Websocket group name: {self.group_name}")
         await self.channel_layer.group_add(
             self.group_name,
             self.channel_name
         )
 
         await self.accept()
-        print("WebSocket connection accepted and added to group")
+        logger.debug("WebSocket connection accepted and added to group")
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
             self.group_name,
             self.channel_name
         )
-        print("WebSocket connection closed and removed from group")
+        logger.debug("WebSocket connection closed and removed from group")
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        print("Received data from WebSocket:", data)
+        logger.debug(f"Received data from WebSocket:, {data}")
 
         
         if data.get("event") == "SAVE":
@@ -80,20 +82,20 @@ class VerificationConsumer(AsyncWebsocketConsumer):
 
 
     async def send_user_data(self, event):
-        print("Type: ", event['event'])
+        logger.debug(f"Type of event:  {event['event']}")
         data = event['user_data']
-        print("Sending data to WebSocket:", data)
+        logger.debug(f"Sending data to WebSocket: {data}")
         await self.send(text_data=json.dumps(event))
 
     async def save_schema(self, data):
         user = await self.get_user()
-        print(UserSerializer(user).data)
+        logger.debug(f'User Serializer Data: {UserSerializer(user).data}')
         if user != None:
             new_schema = await self.query_save_schema(user, data)
             user_schemas = await self.get_user_schemas(user)
-            print("Saved schema ")
+            logger.debug("Saved schema ")
         else:
-            print("No logged in user")
+            logger.debug("No logged in user")
 
 
             
@@ -103,7 +105,7 @@ class VerificationConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_user(self):
         user_id = self.scope["session"].get('user_id')
-        print(user_id)
+        logger.debug(f"User Id: {user_id}")
         if user_id != None:
             try:    
                 return User.objects.get(user_id=user_id)
