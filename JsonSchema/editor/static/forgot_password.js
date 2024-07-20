@@ -1,6 +1,11 @@
 import { validatePasswords } from "./auth.js";
 import { showToast, hideToast, updateToast } from "./toast.js";
 
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('verify_button').addEventListener('click', showModal);
+});
+
+
 async function showModal() {
     try {
         if(!validatePasswords()){
