@@ -172,32 +172,32 @@ ASGI_APPLICATION = 'JsonSchema.asgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'jsonschema',
-        'USER': 'mayankadmin',
-        'PASSWORD': '*password@#',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': env('DB_ENGINE'),
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
 
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'BACKEND': env('CHANNEL_LAYERS_DEFAULT_BACKEND'),
         'CONFIG':{
-            "hosts" : [("localhost", 6379)]
+            "hosts" : [tuple(h.split(':')) for h in env('CHANNEL_LAYERS_DEFAULT_CONFIG_HOSTS').split(',')]
         },
     },
 }
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "BACKEND": env("CACHES_DEFAULT_BACKEND"),
+        "LOCATION": env("CACHES_DEFAULT_LOCATION"),
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+            "CLIENT_CLASS": env("CACHES_DEFAULT_OPTIONS_CLIENT_CLASS"),
+        },
     }
 }
 
