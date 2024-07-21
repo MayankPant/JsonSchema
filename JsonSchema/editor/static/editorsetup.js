@@ -4,6 +4,8 @@ var schema = null;
 var user_input = null;
 export var websocket = null;
 
+const api_key = '127513444384144' 
+const cloud_name  = 'dgmgf7uua'
 document.addEventListener('DOMContentLoaded', function() {
   codeMirroEditor_schema = new CodeMirror.fromTextArea(document.getElementById("schema"), {
     readOnly: false,
@@ -11,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     theme: "dracula",
     lineNumbers: true,
     matchBrackets: true,
-    lineWrapping: true,
+    linseWrapping: true,
     cursorHeight: 1,
     autoCloseBrackets: true,
     styleActiveLine: true,

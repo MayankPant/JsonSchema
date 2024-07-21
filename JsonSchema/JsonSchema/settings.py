@@ -14,7 +14,9 @@ from pathlib import Path
 import os
 import environ
 from logging.handlers import RotatingFileHandler
-
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -50,10 +52,18 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': env('CLOUD_NAME'),
+    'API_KEY': env('CLOUD_API_KEY'),
+    'API_SECRET': env('CLOUDINARY_SECRET')
+}
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    'cloudinary',
+    'cloudinary_storage',
     'channels',
     'rest_framework',
     'editor.apps.EditorConfig',
@@ -237,7 +247,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_URL = '/static/'  # Make sure this is set correctly
 STATICFILES_DIRS = [
-    BASE_DIR / "editor" / "static", BASE_DIR / 'staticfiles',
+    BASE_DIR / "editor" / "static",
 ]
 print(BASE_DIR)
 STATIC_ROOT= os.path.join(BASE_DIR, 'staticfiles')
