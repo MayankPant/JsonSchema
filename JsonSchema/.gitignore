@@ -5,5 +5,5 @@
 /media/
 !/media/resources/
 ../dump.rdb
-.env
+*.env
 /LogFiles/
