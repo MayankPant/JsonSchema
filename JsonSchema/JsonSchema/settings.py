@@ -230,15 +230,19 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+LOGIN_REDIRECT_URL='jsonschema:index'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATIC_URL = 'static/'  # Make sure this is set correctly
+STATIC_URL = '/static/'  # Make sure this is set correctly
 STATICFILES_DIRS = [
-    BASE_DIR / "editor" / "static"
+    BASE_DIR / "editor" / "static", BASE_DIR / 'staticfiles',
 ]
-
+print(BASE_DIR)
+STATIC_ROOT= os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+DATA_UPLOAD_MAX_MEMORY_SIZE=104857600  #100MB
+FILE_UPLOAD_MAX_MEMORY_SIZE=104857600  #100MB

@@ -5,7 +5,6 @@ from .models import User, Schema
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from .backends import UserAuth
 from .utils import generate_key, password_hasher, otp_generator, send_mail
-from .consumers import VerificationConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .serializers import UserSerializer, SchemaSerializer
@@ -128,21 +127,21 @@ def profile(request: HttpRequest):
         
 def forgot_password(request: HttpRequest):
     if request.method == "POST":
-        logger.debug("Used user email:  ", user_email)
+        logger.debug(f"Used user email:   {user_email}")
         user = User.objects.filter(user_email = user_email).first()
-        logger.debug("Retrieved User: ", UserSerializer(user).data)
+        logger.debug(f"Retrieved User:  {UserSerializer(user).data}")
         if user :
             user_otp = "".join([request.POST.get("code-"+str(i))for i in range(1, 7)])
-            logger.debug("User Entered OTP: ", user_otp)
+            logger.debug(f"User Entered OTP:  {user_otp}")
             otp_generated = cache.get(user_email)
-            logger.debug("Generated OTP: ", otp_generated)
+            logger.debug(f"Generated OTP: {otp_generated}")
             if otp_generated == user_otp:
                 new_password = request.POST.get("password")
-                logger.debug("Previous user password hash: ", user.password_hash)
+                logger.debug(f"Previous user password hash: {user.password_hash}")
                 user.password_hash = password_hasher(new_password)
                 user.save()
-                logger.debug("New user password hash: ", user.password_hash)
-                logger.debug("New password: ", new_password)
+                logger.debug(f"New user password hash:  {user.password_hash}")
+                logger.debug(f"New password:  {new_password}")
                 logger.debug("Otp verified. Password changed")
                 return render(request, "editor/login.html")
             else:
