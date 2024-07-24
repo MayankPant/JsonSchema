@@ -1,10 +1,12 @@
 
 /__pycache__/
 /editor/migrations/
-/editor/__pycache__/
 /media/
 !/media/resources/
 ../dump.rdb
 *.env
 /LogFiles/
 /staticfiles/
+/JsonSchema/__pycache__/
+/editor/__pycache__/
+/JsonSchema/JsonSchema/__pycache__/

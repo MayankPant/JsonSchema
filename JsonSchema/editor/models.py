@@ -1,6 +1,8 @@
 from django.db import models
 from datetime import datetime
 from .utils import generate_key
+from django.utils import timezone
+from datetime import datetime
 
 # Create your models here.
 
@@ -47,7 +49,7 @@ class User(models.Model):
     password_hash = models.CharField(default='1234')
     profile_picture = models.CharField(max_length=200)
     user_email = models.CharField(max_length=200, unique=True)
-    created_at = models.DateTimeField(default=datetime.now) # automatically set to now time
+    created_at = models.DateTimeField(default=timezone.now) # automatically set to now time
 
     def __str__(self) -> str:
         return self.user_id + " " + self.username

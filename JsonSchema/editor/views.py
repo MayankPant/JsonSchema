@@ -12,6 +12,12 @@ from django.core.cache import cache
 import json
 from django.conf import settings
 import logging
+import time
+import cloudinary
+from django.conf import settings
+from django.utils import timezone
+from datetime import datetime
+
 
 logger = logging.getLogger('editor')
 
@@ -72,21 +78,56 @@ def login(request: HttpRequest):
     
 def sign_up(request: HttpRequest):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        logger.debug(username)
-        email = request.POST.get('email')
-        logger.debug(email)
-        password = request.POST.get('password')
-        logger.debug(password)
-        confirm_password = request.POST.get('confirm_password')
-        logger.debug(confirm_password)
-        profile_picture = request.FILES.get('profile_picture')
-        logger.debug(profile_picture)
-        user = User(user_id=generate_key(), username=username, user_email=email,password_hash=password_hasher(password), profile_picture=profile_picture)
-        user.save()
-        return redirect('login')
+        try:
+            username = request.POST.get('username')
+            logger.debug(username)
+            email = request.POST.get('email')
+            logger.debug(email)
+            password = request.POST.get('password')
+            logger.debug(password)
+            confirm_password = request.POST.get('confirm_password')
+            logger.debug(confirm_password)
+            profile_picture = request.FILES.get('profile_picture')
+            logger.debug(f"Profile Picture to be updated to: {profile_picture}")
+            public_id = request.POST.get('cloudinary_public_id')
+            logger.debug(f"Image public id: {public_id}")
+            user = User(user_id=generate_key(), username=username, user_email=email,password_hash=password_hasher(password), profile_picture=public_id, created_at=timezone.make_aware(datetime(2024, 7, 24, 8, 51, 9, 920129)))
+            user.save()
+            return redirect('login')
+        except Exception as e:
+            logger.debug(f"Error in signup view: {e}")
+            return render(request, 'editor/signup.html')
     else:
-        return render(request, "editor/signup.html")
+        return render(request, "editor/signup.html")    
+
+def get_signature(request: HttpRequest):
+
+    """the signature has the current timestamp which the cloudinary will
+    use to verify how long the signature should be valid for. The default
+    value from cloudinary is 1 hour. We can subtract time from it if we want it
+    to be a bit less"""
+    if request.method == 'GET':
+        try:
+                params = {
+                'timestamp' :int(time.time()),
+                'folder' : 'jsonschema_profiles'
+            }
+
+                signature = cloudinary.utils.api_sign_request(params_to_sign=params, api_secret=settings.CLOUDINARY_STORAGE['API_SECRET'])
+                return JsonResponse({
+                'status' : status.HTTP_201_CREATED,
+                'signature': signature,
+                'api_key' : settings.CLOUDINARY_STORAGE['API_KEY'],
+                'timestamp' : params['timestamp'],
+            })
+        except Exception as e:
+            logger.debug(f"Error at get_signature: {e}")
+            return JsonResponse({
+                'status' : status.HTTP_404_NOT_FOUND,
+                "error" : "error occured"
+            })
+
+        
     
 def delete_schema(request: HttpRequest):
     if request.method == "POST":
@@ -114,10 +155,12 @@ def profile(request: HttpRequest):
         logger.debug(f"Email to be updated to: {email}")
         profile_picture = request.FILES.get('profile_picture')
         logger.debug(f"Profile Picture to be updated to: {profile_picture}")
+        public_id = request.POST.get('cloudinary_public_id')
+        logger.debug(f"Image public id: {public_id}")
         user = User.objects.get(user_id = user_id)
         user.username = username
         user.user_email = email
-        user.profile_picture = profile_picture
+        user.profile_picture = public_id
         user.save(update_fields=["username", "user_email", "profile_picture"])
         return redirect('login')
     else:
