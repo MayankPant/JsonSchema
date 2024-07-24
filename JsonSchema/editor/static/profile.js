@@ -4,6 +4,38 @@ import { getCookie } from './utils.js';
 const api_key = '127513444384144' 
 const cloud_name  = 'dgmgf7uua'
 
+async function submitForm(){
+    event.preventDefault();
+    var formData = new FormData(document.getElementById('profile-save-form'));
+    
+    /**
+     * No longer need the profile picture file as it is already uploaded
+     * to cloud with its public id incorporated into the cloudniaryPublicId
+     * hidden field. So no need to send the file to server.
+     */
+    
+    formData.delete('profile-picture');
+    const csrf_token = await getCookie("csrftoken");
+    var subission_response = await fetch("/jsonschema/signup/",{
+        method: 'POST',
+        mode: "cors",
+        headers: {
+            "X-CSRFToken": csrf_token
+        },
+        credentials: "same-origin",
+        body: formData,
+    })
+
+    subission_response = await subission_response.json();
+    if(subission_response.status == 200){
+        showToast("Profile Updated", "text-green-500");
+        window.location.href='/jsonschema/login';
+    }
+    else{
+        showToast("Bad or duplicate credentials.", "text-red-500");
+    }
+}
+
 async function validate(){
         console.log("Entered the form validation method in profile.js");
         event.preventDefault();
@@ -13,7 +45,6 @@ async function validate(){
             var file = document.getElementById('file_input').files[0];
             console.log("File: ", file);
             await uploadImage(file);
-            showToast("Profile Updated", "text-green-500");
         }
         else{
             showToast("Bad Credentials.", "text-red-500");
@@ -72,3 +103,4 @@ async function uploadImage(file) {
 }
 window.validate = validate;
 window.uploadImage = uploadImage;
+window.submitForm = submitForm;

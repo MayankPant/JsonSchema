@@ -87,16 +87,20 @@ def sign_up(request: HttpRequest):
             logger.debug(password)
             confirm_password = request.POST.get('confirm_password')
             logger.debug(confirm_password)
-            profile_picture = request.FILES.get('profile_picture')
-            logger.debug(f"Profile Picture to be updated to: {profile_picture}")
             public_id = request.POST.get('cloudinary_public_id')
             logger.debug(f"Image public id: {public_id}")
             user = User(user_id=generate_key(), username=username, user_email=email,password_hash=password_hasher(password), profile_picture=public_id, created_at=timezone.make_aware(datetime(2024, 7, 24, 8, 51, 9, 920129)))
             user.save()
-            return redirect('login')
+            return JsonResponse({
+                'status' : status.HTTP_200_OK,
+                "error" : "Account created succesfully."
+            })   
         except Exception as e:
             logger.debug(f"Error in signup view: {e}")
-            return render(request, 'editor/signup.html')
+            return JsonResponse({
+                'status' : status.HTTP_404_NOT_FOUND,
+                "error" : "Account not created. Form submission failed."
+            })
     else:
         return render(request, "editor/signup.html")    
 

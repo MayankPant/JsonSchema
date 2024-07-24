@@ -27,7 +27,7 @@
         <div class="login-image flex justify-center items-center mb-6">
             <img src="/media/resources/logo.png" alt="" height="120px" width="120px">
         </div>
-        <form action="/jsonschema/signup/" id="profile-save-form" method="post" enctype="multipart/form-data">
+        <form action="/jsonschema/signup/" id="profile-save-form" method="post" enctype="multipart/form-data" onsubmit="submitForm()">
             {% csrf_token %}
             <div class="field-container flex flex-col gap-4">
                 <div class="username flex flex-col">
@@ -69,7 +69,7 @@
                 </div>
             </div>
             <div class="flex justify-center mt-6">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg" onclick="valdiateForm()">Create Account</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Create Account</button>
             </div>
         </form>
         <div id="toast-default" class="fixed hidden items-center justify-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow top-5 left-1/2 transform -translate-x-1/2 dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800 z-50" role="alert">
