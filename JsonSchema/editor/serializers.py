@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_profile_picture_url(self, obj):
         if obj.profile_picture:
-            return obj.profile_picture.url
+            return obj.profile_picture
         return None
 
 class SchemaSerializer(serializers.ModelSerializer):

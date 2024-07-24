@@ -17,7 +17,7 @@ import cloudinary
 from django.conf import settings
 from django.utils import timezone
 from datetime import datetime
-
+from cloudinary.utils import cloudinary_url
 
 logger = logging.getLogger('editor')
 
@@ -70,6 +70,10 @@ def login(request: HttpRequest):
             views to async. This allows us to send the data 
             """
             logger.debug("Sent user data to WebSocket group:", relevent_user_data)
+            # creating the profile picture url
+            image_url = cloudinary_url(f'{user.profile_picture}', cloud_name=settings.CLOUDINARY_STORAGE['CLOUD_NAME'])
+            logger.debug(f"Generated Cloudinary url: {image_url}")
+            user.profile_picture = image_url[0]
             return render(request, "editor/index.html", context={"user" : user, "user_schemas" : user_schemas})
         else:
             return render(request, "editor/login.html")

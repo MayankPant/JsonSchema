@@ -80,7 +80,7 @@
                     <span class="absolute -inset-1.5"></span>
                     <span class="sr-only">Open user menu</span>
                     <!-- using .url to form a url from the name  as it constructs the url path-->
-                    <img class="h-8 w-8 rounded-full" id="avatar" alt="" src="{{ user.profile_picture.url }}">
+                    <img class="h-8 w-8 rounded-full" id="avatar" alt="" src="{{ user.profile_picture|safe }}">
                   </button>
                 </div>
       
