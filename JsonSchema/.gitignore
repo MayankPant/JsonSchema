@@ -9,4 +9,4 @@
 /staticfiles/
 /JsonSchema/__pycache__/
 /editor/__pycache__/
-/JsonSchema/JsonSchema/__pycache__/
+JsonSchema/JsonSchema/__pycache__/
