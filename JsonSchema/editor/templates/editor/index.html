@@ -69,7 +69,7 @@
                 <div class="sidebar">
                     <p>SAVED SCHEMAS</p>
                     {% for schemas in user_schemas %}
-                    <form action="/jsonschema/delete/" method="post">
+                    <form action="/jsonschema/delete/" method="post" onsubmit="showDeletion()" id="savedSchemaForm">
                         {% csrf_token %}
                         <div id="schema-list">
                             <input type="radio" class="radio-schemas" id="{{ schemas.schema_name }}" name="selected_schema" value="{{ schemas.schema_name }}" onclick="viewSchema()">

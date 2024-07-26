@@ -1,5 +1,5 @@
 import { codeMirroEditor_schema }  from "./editorsetup.js";
-import {codeMirroEditor_user_input}  from "./editorsetup.js";
+import { showToast } from "./toast.js";
 import {websocket} from "./editorsetup.js";
 
 
@@ -25,6 +25,7 @@ function saveSchema() {
             "schemaName" : schemaName,
             "schema" : codeMirroEditor_schema.getValue()
         })
+        showToast("Schema Saved.", "text-blue-500");
         closeModal();
         location.reload();
     }
@@ -99,11 +100,20 @@ function viewSchema(){
         });
 }
 
+function showDeletion(){
+    event.preventDefault();
+    showToast('Schema Deleted.', 'text-red-500');
+    var form = document.getElementById('savedSchemaForm');
+    form.submit();
+}
+
 // Attach functions to window object to make them global
 window.showModal = showModal;
 window.closeModal = closeModal;
 window.saveSchema = saveSchema;
 window.viewSchema = viewSchema;
+window.showDeletion = showDeletion;
+
 
 function sendToServer(data) {
 
