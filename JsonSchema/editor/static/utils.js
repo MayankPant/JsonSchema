@@ -17,3 +17,14 @@ export async function getCookie(name){
 
     return cookieValue;
 }
+export async function generateFileHash(file){
+    // reads the file content
+    const buffer = await file.arrayBuffer();
+    // convert the raw data into a 256 bytes hash string
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    // converts each byte into a hexadecimal and then pads two zeroes to ensure each hax value is 2 characters long
+    const hashIndex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashIndex;
+
+}

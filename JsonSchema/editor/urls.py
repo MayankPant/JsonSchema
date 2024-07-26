@@ -12,5 +12,6 @@ urlpatterns = [
     path('generate_otp/', views.generate_otp, name="generate_otp"),
     path('export_schemas/', views.export_schemas, name="export_schemas"),
     path('get_signature/', views.get_signature, name='get_signature'),
+    path('check_file_exists/', views.check_file_exists, name='check_file_exists'),
 
 ]

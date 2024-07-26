@@ -18,6 +18,10 @@ from django.conf import settings
 from django.utils import timezone
 from datetime import datetime
 from cloudinary.utils import cloudinary_url
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
+from django.views.decorators.csrf import csrf_exempt
+
 
 logger = logging.getLogger('editor')
 
@@ -93,7 +97,9 @@ def sign_up(request: HttpRequest):
             logger.debug(confirm_password)
             public_id = request.POST.get('cloudinary_public_id')
             logger.debug(f"Image public id: {public_id}")
-            user = User(user_id=generate_key(), username=username, user_email=email,password_hash=password_hasher(password), profile_picture=public_id, created_at=timezone.make_aware(datetime(2024, 7, 24, 8, 51, 9, 920129)))
+            profile_picture_file_hash = request.POST.get('profile_picture_file_hash')
+            logger.debug(f"Image File hash: {profile_picture_file_hash}")
+            user = User(user_id=generate_key(), username=username, user_email=email,password_hash=password_hasher(password), profile_picture=public_id, created_at=timezone.make_aware(datetime(2024, 7, 24, 8, 51, 9, 920129)), file_hash=profile_picture_file_hash )
             user.save()
             return JsonResponse({
                 'status' : status.HTTP_200_OK,
@@ -161,20 +167,48 @@ def profile(request: HttpRequest):
         logger.debug(f"Username to be updated to: {username}")
         email = request.POST.get('email')
         logger.debug(f"Email to be updated to: {email}")
-        profile_picture = request.FILES.get('profile_picture')
-        logger.debug(f"Profile Picture to be updated to: {profile_picture}")
         public_id = request.POST.get('cloudinary_public_id')
         logger.debug(f"Image public id: {public_id}")
+        file_hash = request.POST.get("profile_picture_file_hash")
+        logger.debug(f"Profile Picture file hash: {file_hash}")
         user = User.objects.get(user_id = user_id)
         user.username = username
         user.user_email = email
         user.profile_picture = public_id
-        user.save(update_fields=["username", "user_email", "profile_picture"])
+        user.file_hash = file_hash
+        user.save(update_fields=["username", "user_email", "profile_picture", "file_hash"])
         return redirect('login')
     else:
         if user_id != None:
             user = User.objects.get(user_id = user_id)
+            user.profile_picture = cloudinary_url(f"{user.profile_picture}", cloud_name=settings.CLOUDINARY_STORAGE['CLOUD_NAME'])[0]
             return render(request, "editor/profile.html", context={"user" : user})
+
+        
+@csrf_exempt
+def check_file_exists(request: HttpRequest):
+    data = json.loads(request.body)
+    user_id = request.session.get('user_id')
+    if user_id != None:
+        user = User.objects.get(user_id=user_id)
+        saved_file_hash = user.file_hash
+        to_be_uploaded_file_hash = data['uploaded_file_hash']
+        logger.debug(f"Saved File Hash: {saved_file_hash}")
+        logger.debug(f"Uploaded File Hash: {to_be_uploaded_file_hash}")
+        if saved_file_hash == to_be_uploaded_file_hash:
+            logger.debug(f"File already uploaded to database: {saved_file_hash}")
+            return JsonResponse({
+                "public_id" : user.profile_picture,
+                "status": status.HTTP_200_OK
+            })
+        else:
+            logger.debug(f"File not found: {saved_file_hash}")
+            return JsonResponse({
+                "status": status.HTTP_404_NOT_FOUND,
+                "message" : "Given picture not found"
+            })
+
+    
         
 def forgot_password(request: HttpRequest):
     if request.method == "POST":

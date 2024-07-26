@@ -1,6 +1,6 @@
 import { validatePasswords } from "./auth.js";
 import { showToast, hideToast, updateToast } from "./toast.js";
-
+import { getCookie } from "./utils.js";
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('verify_button').addEventListener('click', showModal);
 });

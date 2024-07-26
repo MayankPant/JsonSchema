@@ -50,6 +50,7 @@ class User(models.Model):
     profile_picture = models.CharField(max_length=200)
     user_email = models.CharField(max_length=200, unique=True)
     created_at = models.DateTimeField(default=timezone.now) # automatically set to now time
+    file_hash=models.CharField(max_length=64, default='', null=True)
 
     def __str__(self) -> str:
         return self.user_id + " " + self.username

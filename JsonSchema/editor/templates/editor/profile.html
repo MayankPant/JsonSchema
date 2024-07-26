@@ -13,6 +13,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
     <script type="module" src="{% static 'auth.js' %}"></script>
     <script type="module" src="{% static 'toast.js' %}"></script>
+    <script type="module" src="{% static 'signup.js' %}"></script>
     <script type="module" src="{% static 'profile.js' %}"></script>
 
 
@@ -31,9 +32,9 @@
 <body>
         <div class="container max-w-md mx-auto p-8 rounded-lg shadow-lg">
             <div class="login-image flex justify-center items-center mb-6">
-                <img class="h-15 w-15  rounded-full" src="{{ user.profile_picture.url }}" alt="user current profile Picture">
+                <img id="profile_picture" class="h-15 w-15  rounded-full" src="{{ user.profile_picture|safe }}" alt="user current profile Picture">
             </div>
-            <form id="profile-save-form" action="/jsonschema/profile/" method="post" enctype="multipart/form-data" onsubmit="validate()">
+            <form id="profile-save-form" action="/jsonschema/profile/" method="post" enctype="multipart/form-data" onsubmit="editProfile()">
                 {% csrf_token %}
                 <div class="field-container flex flex-col gap-4">
                     <div class="username flex flex-col">
@@ -54,7 +55,8 @@
                         
                         
                         <label class="mb-2 mt-6 font-semibold" for="file_input">Upload Profile Picture:</label>
-                        <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file" onchange="validateFile()" name="profile_picture" value="{{ user.profile_picture }}">
+                        <input type="hidden" id="cloudinaryPublicId" name="cloudinary_public_id">
+                        <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file" onchange="validateAndUpload()" name="profile_picture" value="{{ user.profile_picture }}">
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400 hidden" id="file-validation">SVG, PNG, JPG or GIF.</p>
     
                     </div>
