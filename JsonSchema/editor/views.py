@@ -21,6 +21,7 @@ from cloudinary.utils import cloudinary_url
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.sessions.models import Session
 
 
 logger = logging.getLogger('editor')
@@ -283,3 +284,20 @@ def parse_data(data: list):
         })
 
     return schema_list
+
+@csrf_exempt
+def sign_out(request: HttpRequest):
+    try:
+        Session.objects.filter(session_key=request.session.session_key).delete()
+        logger.debug(f"User session deleted.")
+        return JsonResponse({
+            "message" : "LOGGED_OFF",
+            "status" : status.HTTP_200_OK
+        })
+    except Exception as e:
+        logger.debug(f"Error Ocuured during backend signout: {e}")
+        return JsonResponse({
+            "message" : "LOGGED_OFF_UNSUCCESSFULL",
+            "status" : status.HTTP_404_NOT_FOUND
+        })
+

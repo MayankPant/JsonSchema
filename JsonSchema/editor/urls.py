@@ -13,5 +13,5 @@ urlpatterns = [
     path('export_schemas/', views.export_schemas, name="export_schemas"),
     path('get_signature/', views.get_signature, name='get_signature'),
     path('check_file_exists/', views.check_file_exists, name='check_file_exists'),
-
+    path('sign_out/', views.sign_out, name='sign_out')
 ]
