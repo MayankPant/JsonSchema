@@ -33,6 +33,13 @@ function deleteAllCookies() {
       document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
     });
   }
-  
 
+function toggleUserMenu(){
+    var menu = document.getElementById('userMenu');
+    menu.classList.toggle('hidden');
+  }
+
+
+
+window.toggleUserMenu = toggleUserMenu;
 window.signOut = signOut;
