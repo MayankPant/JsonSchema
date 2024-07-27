@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User, Schema
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse, HttpResponseRedirect
 from .backends import UserAuth
 from .utils import generate_key, password_hasher, otp_generator, send_mail
 from channels.layers import get_channel_layer
@@ -38,53 +38,65 @@ def index(request: HttpRequest):
 
 def login(request: HttpRequest):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        logger.debug(username)
-        password = request.POST.get('password')
-        logger.debug(password)
-        user = UserAuth.authenticate(request=request, username=username, password=password)
-
-        """
-
-        Retrieving the schemas for the user
-
-        """
-        user_schemas = Schema.objects.filter(user=user)
-        user_serializer = UserSerializer(user)
-        schema_serializer = SchemaSerializer(user_schemas, many=True)
-        if user != None:
-            """
-            Here we use the session to store the data related to the 
-            logged in user. Sessions are used to store information about
-            multiple requests for the same user.
-            Sessions have several benefits like user isolation, persistence,
-            scalability, security
-            """
-            request.session['user_id'] = user.user_id
-            request.session['user_schemas'] = schema_serializer.data
-            logger.debug(f"Type of schema:  {type(schema_serializer.data)}")
-            relevent_user_data = {
-                "user": user_serializer.data,
-                "user_schemas": schema_serializer.data
-            }
+        try:
+            username = request.POST.get('username')
+            logger.debug(username)
+            password = request.POST.get('password')
+            logger.debug(password)
+            user = UserAuth.authenticate(request=request, username=username, password=password)
 
             """
-            Websocket communication is asynchronous, but normal views are
-            synchronous, hence you cant simply use the websocket in views to
-            send the data. WHat we did was create a group and converted the sync
-            views to async. This allows us to send the data 
+
+            Retrieving the schemas for the user
+
             """
-            logger.debug("Sent user data to WebSocket group:", relevent_user_data)
-            # creating the profile picture url
-            image_url = cloudinary_url(f'{user.profile_picture}', cloud_name=settings.CLOUDINARY_STORAGE['CLOUD_NAME'])
-            logger.debug(f"Generated Cloudinary url: {image_url}")
-            user.profile_picture = image_url[0]
-            return render(request, "editor/index.html", context={"user" : user, "user_schemas" : user_schemas})
-        else:
-            return render(request, "editor/login.html")
+            if user != None:
+                user_schemas = Schema.objects.filter(user=user)
+                user_serializer = UserSerializer(user)
+                schema_serializer = SchemaSerializer(user_schemas, many=True)
+            
+                """
+                Here we use the session to store the data related to the 
+                logged in user. Sessions are used to store information about
+                multiple requests for the same user.
+                Sessions have several benefits like user isolation, persistence,
+                scalability, security
+                """
+                request.session['user_id'] = user.user_id
+                request.session['user_schemas'] = schema_serializer.data
+                logger.debug(f"Type of schema:  {type(schema_serializer.data)}")
+                relevent_user_data = {
+                    "user": user_serializer.data,
+                    "user_schemas": schema_serializer.data
+                }
+
+                """
+                Websocket communication is asynchronous, but normal views are
+                synchronous, hence you cant simply use the websocket in views to
+                send the data. WHat we did was create a group and converted the sync
+                views to async. This allows us to send the data 
+                """
+                logger.debug("Sent user data to WebSocket group:", relevent_user_data)
+                # creating the profile picture url
+                image_url = cloudinary_url(f'{user.profile_picture}', cloud_name=settings.CLOUDINARY_STORAGE['CLOUD_NAME'])
+                logger.debug(f"Generated Cloudinary url: {image_url}")
+                user.profile_picture = image_url[0]
+                logger.debug("User login successfull")
+                return render(request, "editor/index.html", context={"user" : user, "user_schemas" : user_schemas})
+            else:
+                logger.debug(f"User not found")
+                return render(request, 'editor/login.html', context={"errorMessage": "Bad Credentials"})
+        except Exception as e:
+            logger.debug(f"Error occured: {e}")
+            return render(request, 'editor/login.html', context={"errorMessage": "Error occurred."})
     else:
-        return render(request, "editor/login.html")
-    
+        """
+        We used an HttpResponseRedirect here because it always sends a GET request never a post.
+        We observed a pattern where if we submit a form, redirecting to the same form makes our brower use PRG patter.
+        This is called a POST-request-Get which brower uses to remember our actions. In order to prevent this we use
+        HttpResponseRedirect which is inherently a GET request.
+        """
+        return render(request, 'editor/login.html', )
 def sign_up(request: HttpRequest):
     if request.method == 'POST':
         try:
