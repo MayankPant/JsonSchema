@@ -11,6 +11,9 @@ services:
       - postgresql
     entrypoint: ["./entrypoint.sh"]
     container_name: jsonschema
+    volumes:
+      - static_volume:/usr/src/app/editor/static
+      - media_volume:/usr/src/app/media
   redis:
     image: redis:latest
     ports:
@@ -33,6 +36,13 @@ services:
       - "80:80"
     volumes:
       - ./nginxjsonschema-prod.conf:/etc/nginx/conf.d/nginx.conf
+      - static_volume:/usr/src/app/editor/static
+      - media_volume:/usr/src/app/media
     depends_on:
       - jsonschema
     container_name: nginx
+# Shared volumes between multiple containers so that nginx can access the files in jsonschema 
+volumes:
+  static_volume:
+  media_volume:
+      
