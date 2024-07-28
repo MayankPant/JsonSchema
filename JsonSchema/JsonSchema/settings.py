@@ -24,7 +24,7 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 
-environ.Env.read_env(os.path.join(BASE_DIR, 'dev.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, 'prod.env'))
 
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 

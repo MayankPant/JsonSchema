@@ -1,0 +1,38 @@
+version: '3.0'
+services:
+  jsonschema:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    depends_on:
+      - redis
+      - postgresql
+    entrypoint: ["./entrypoint.sh"]
+    container_name: jsonschema
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    container_name: redis
+  postgresql:
+    image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=mayankadmin
+      - POSTGRES_PASSWORD=*password@#
+      - POSTGRES_DB=jsonschema
+    container_name: postgres
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginxjsonschema-prod.conf:/etc/nginx/conf.d/nginx.conf
+    depends_on:
+      - jsonschema
+    container_name: nginx
