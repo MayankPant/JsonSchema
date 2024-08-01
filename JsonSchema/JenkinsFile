@@ -1,35 +1,31 @@
 pipeline {
     agent { 
-        docker {
-            image 'docker:latest' // Docker image with Docker installed
-            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock' // Allows Docker commands within the container
+        node {
+            label 'docker-agent-alpine'
         }
-      }
-       environment {
-        // Define your environment variables here
-        DOCKER_REGISTRY = 'hub.docker.com/repository/docker/mayankpant4512'
+    }
+    
+    environment {
+        DOCKER_REGISTRY = 'mayankpant4512'  // Your Docker Hub username
         DOCKER_IMAGE = 'jsonschema'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
     }
       
     stages {
         stage('Build') {
             steps {
                 echo "Building.."
-                script {
-                    docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}", ".")
-                }
+                sh "docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID} ."
             }
         }
         
         stage('Deliver') {
             steps {
                 echo 'Deliver....'
-                script {
-                    docker.withRegistry("https://${DOCKER_REGISTRY}") {
-                        docker.image("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}").push()
-                }
+                sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
+                sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}"
+                sh "docker logout"
             }
         }
     }
-}
 }
