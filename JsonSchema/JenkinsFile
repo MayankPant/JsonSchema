@@ -1,0 +1,28 @@
+pipeline {
+    agent { 
+        node {
+            label 'docker-agent-alpine'
+            }
+      }
+      
+    stages {
+        stage('Build') {
+            steps {
+                echo "Building.."
+                sh '''
+                cd JsonSchema/
+                docker compose up --build
+                '''
+            }
+        }
+        
+        stage('Deliver') {
+            steps {
+                echo 'Deliver....'
+                sh '''
+                docker push mayankpant4512/jsonschema
+                '''
+            }
+        }
+    }
+}

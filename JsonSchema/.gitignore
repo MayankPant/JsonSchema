@@ -11,3 +11,4 @@
 /editor/__pycache__/
 JsonSchema/editor/__pycache__/
 *dump.rdb
+data/

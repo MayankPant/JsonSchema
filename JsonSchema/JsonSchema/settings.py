@@ -249,7 +249,6 @@ STATIC_URL = '/static/'  # Make sure this is set correctly
 STATICFILES_DIRS = [
     BASE_DIR / "editor" / "static",
 ]
-print(BASE_DIR)
 STATIC_ROOT= os.path.join(BASE_DIR, 'staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
