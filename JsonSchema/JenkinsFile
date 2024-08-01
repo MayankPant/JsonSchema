@@ -1,36 +1,25 @@
 pipeline {
-    agent { 
-        node {
-            label 'docker-agent-alpine'
-        }
-    }
-    
+    agent any  // This can be any available agent
+
     environment {
-        DOCKER_REGISTRY = 'mayankpant4512'  // Your Docker Hub username
+        DOCKER_REGISTRY = 'mayankpant4512'
         DOCKER_IMAGE = 'jsonschema'
     }
-      
+
     stages {
         stage('Build') {
             steps {
-                echo "Building.."
-                dir('JsonSchema') {  // Use dir step to change directory
-                    script {
-                        docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}", '.')
-                    }
+                script {
+                    docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}", "./JsonSchema")
                 }
             }
         }
-        
+
         stage('Deliver') {
             steps {
-                echo 'Deliver....'
-                dir('JsonSchema') {  // Use dir step to change directory
-                    script {
-                        // For public repositories, we don't need to specify credentials
-                        docker.withRegistry('https://registry.hub.docker.com') {
-                            docker.image("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}").push()
-                        }
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com') {
+                        docker.image("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}").push()
                     }
                 }
             }
