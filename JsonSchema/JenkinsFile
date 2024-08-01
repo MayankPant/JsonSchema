@@ -15,7 +15,8 @@ pipeline {
             steps {
                 echo "Building.."
                 script {
-                    docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}")
+                    cd JsonSchema
+                    docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}", '.')
                 }
             }
         }
@@ -24,6 +25,7 @@ pipeline {
             steps {
                 echo 'Deliver....'
                 script {
+                    cd JsonSchema
                     docker.withRegistry('https://registry.hub.docker.com') {
                         docker.image("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}").push()
                     }
