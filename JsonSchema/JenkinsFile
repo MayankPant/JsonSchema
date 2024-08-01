@@ -8,7 +8,6 @@ pipeline {
     environment {
         DOCKER_REGISTRY = 'mayankpant4512'  // Your Docker Hub username
         DOCKER_IMAGE = 'jsonschema'
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials')
     }
       
     stages {
@@ -22,7 +21,6 @@ pipeline {
         stage('Deliver') {
             steps {
                 echo 'Deliver....'
-                sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u ${DOCKERHUB_CREDENTIALS_USR} --password-stdin"
                 sh "docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}"
                 sh "docker logout"
             }
