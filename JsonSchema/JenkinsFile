@@ -1,8 +1,9 @@
 pipeline {
     agent { 
-        node {
-            label 'docker-agent-alpine'
-            }
+        docker {
+            image 'docker:latest' // Docker image with Docker installed
+            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock' // Allows Docker commands within the container
+        }
       }
        environment {
         // Define your environment variables here
