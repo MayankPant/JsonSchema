@@ -4,25 +4,31 @@ pipeline {
             label 'docker-agent-alpine'
             }
       }
+       environment {
+        // Define your environment variables here
+        DOCKER_REGISTRY = 'hub.docker.com/repository/docker/mayankpant4512'
+        DOCKER_IMAGE = 'jsonschema'
+    }
       
     stages {
         stage('Build') {
             steps {
                 echo "Building.."
-                sh '''
-                cd JsonSchema/
-                docker compose up --build
-                '''
+                script {
+                    docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}", ".")
+                }
             }
         }
         
         stage('Deliver') {
             steps {
                 echo 'Deliver....'
-                sh '''
-                docker push mayankpant4512/jsonschema
-                '''
+                script {
+                    docker.withRegistry("https://${DOCKER_REGISTRY}") {
+                        docker.image("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}").push()
+                }
             }
         }
     }
+}
 }
