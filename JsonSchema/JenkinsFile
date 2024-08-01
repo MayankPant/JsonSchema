@@ -15,6 +15,9 @@ pipeline {
             steps {
                 echo "Building.."
                 script {
+                    sudo apk add --update docker
+                    sudo rc-update add docker boot
+                    sudo service docker start
                     docker.build("${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${env.BUILD_ID}", ".")
                 }
             }
